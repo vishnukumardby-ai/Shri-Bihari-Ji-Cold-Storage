@@ -6,7 +6,7 @@ from datetime import datetime
 # वेबसाइट की सेटिंग
 st.set_page_config(page_title="Shri Bihari Ji Cold Storage", layout="wide")
 
-# मुख्य हेडर (डिजिटल मुनीम हटा दिया गया है)
+# मुख्य हेडर
 st.markdown("""
     <div style='text-align: center; background-color: #f8fafc; padding: 25px; border: 2px solid #1E3A8A; border-radius: 15px;'>
         <h1 style='color: #1E3A8A; margin-bottom: 5px; font-family: "Arial", sans-serif;'>🚜 SHRI BIHARI JI COLD STORAGE</h1>
@@ -46,8 +46,9 @@ if login_type == "एडमिन (मैनेजमेंट)":
 
         else:
             st.subheader(f"📝 {task} वाउचर एंट्री")
+            # सर्च फीचर
             search_list = (master_df['Name'] + " s/o " + master_df['Father_Name'] + " (" + master_df['Village'] + ")").tolist()
-            selected_farmer = st.selectbox("किसान खोजें (यहाँ टाइप करें...)", [""] + search_list)
+            selected_farmer = st.selectbox("किसान खोजें (नाम लिखना शुरू करें...)", [""] + search_list)
             
             with st.form("voucher_form"):
                 col1, col2 = st.columns(2)
@@ -84,34 +85,40 @@ if login_type == "एडमिन (मैनेजमेंट)":
                     
                     updated_df = pd.concat([df, pd.DataFrame([row])], ignore_index=True)
                     conn.update(worksheet=task, data=updated_df)
-                    st.success(f"{task} एंट्री सफल!")
+                    st.success(f"{task} एंट्री सुरक्षित!")
 
 elif login_type == "किसान लॉगिन":
-    st.subheader("👨‍🌾 किसान पोर्टल")
+    st.subheader("👨‍🌾 किसान भाई अपना रिकॉर्ड देखें")
     col_k1, col_k2 = st.columns(2)
     with col_k1:
-        k_name = st.text_input("किसान का नाम")
-        k_acc = st.text_input("अकाउंट नंबर", type="password")
+        k_mob = st.text_input("अपना रजिस्टर्ड मोबाइल नंबर")
     with col_k2:
-        k_fname = st.text_input("पिता का नाम")
-        k_vill = st.text_input("गाँव")
+        k_acc = st.text_input("अपना अकाउंट नंबर (A/c No.)", type="password")
 
-    if st.button("रिकॉर्ड देखें"):
+    if st.button("हिसाब देखें"):
         amad_df = conn.read(worksheet="Amad")
         loan_df = conn.read(worksheet="Loan")
         bard_df = conn.read(worksheet="Bardana")
         
-        f_amad = amad_df[amad_df['Account_No'].astype(str) == str(k_acc)]
-        f_loan = loan_df[loan_df['Account_No'].astype(str) == str(k_acc)]
-        f_bard = bard_df[bard_df['Account_No'].astype(str) == str(k_acc)]
+        # मोबाइल और अकाउंट नंबर दोनों का मिलान
+        f_amad = amad_df[(amad_df['Mobile'].astype(str) == str(k_mob)) & (amad_df['Account_No'].astype(str) == str(k_acc))]
+        f_loan = loan_df[(loan_df['Mobile'].astype(str) == str(k_mob)) & (loan_df['Account_No'].astype(str) == str(k_acc))]
+        f_bard = bard_df[(bard_df['Mobile'].astype(str) == str(k_mob)) & (bard_df['Account_No'].astype(str) == str(k_acc))]
         
-        if not f_amad.empty or not f_loan.empty:
-            st.success(f"नमस्ते {k_name} जी!")
-            t1, t2, t3 = st.tabs(["स्टॉक विवरण", "लोन हिसाब", "बारदाना"])
-            with t1: st.dataframe(f_amad)
-            with t2: st.dataframe(f_loan)
-            with t3: st.dataframe(f_bard)
+        if not f_amad.empty or not f_loan.empty or not f_bard.empty:
+            name_val = f_amad['Name'].iloc[0] if not f_amad.empty else (f_loan['Name'].iloc[0] if not f_loan.empty else f_bard['Name'].iloc[0])
+            st.success(f"नमस्ते {name_val} जी!")
             
-            st.markdown(f"### 📊 कुल बैलेंस: \n **पैकेट:** {f_amad['Packets'].sum()} | **लोन बकाया:** ₹{f_loan['Loan_Amount'].sum()} | **बारदाना खर्च:** ₹{f_bard['Total_Bags_Cost'].sum()}")
+            t1, t2, t3 = st.tabs(["आलू स्टॉक (Amad)", "लोन विवरण", "बारदाना"])
+            with t1: st.dataframe(f_amad[['Date', 'Voucher_No', 'Lot_No', 'Packets']])
+            with t2: st.dataframe(f_loan[['Date', 'Voucher_No', 'Loan_Amount']])
+            with t3: st.dataframe(f_bard[['Date', 'Voucher_No', 'Jute_Bags', 'Plastic_Bags', 'Total_Bags_Cost']])
+            
+            st.markdown(f"""
+            ### 📊 कुल सारांश:
+            * **कुल पैकेट जमा:** {f_amad['Packets'].sum()}
+            * **कुल लोन बकाया:** ₹{f_loan['Loan_Amount'].sum()}
+            * **बारदाना खर्च:** ₹{f_bard['Total_Bags_Cost'].sum()}
+            """)
         else:
-            st.error("कोई जानकारी नहीं मिली। कृपया अकाउंट नंबर जाँचें।")
+            st.error("रिकॉर्ड नहीं मिला। कृपया अपना मोबाइल नंबर और अकाउंट नंबर जाँचें।")
