@@ -3,87 +3,86 @@ from streamlit_gsheets import GSheetsConnection
 import pandas as pd
 from datetime import datetime
 
-# पेज सेटिंग
+# 1. पेज की सेटिंग
 st.set_page_config(page_title="Shri Bihari Ji Cold Storage", layout="wide")
 
-# कनेक्शन
+# 2. कनेक्शन सेटअप
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-# हेडर (सिर्फ नाम और पता)
+# 3. हेडर (ईमेल और मोबाइल नंबर के साथ, बिना वेलकम मैसेज के)
 st.markdown(f"""
-    <div style='text-align: center; background-color: #1E3A8A; padding: 20px; border-radius: 10px; color: white;'>
+    <div style='text-align: center; background-color: #1E3A8A; padding: 25px; border-radius: 10px; color: white;'>
         <h1 style='margin: 0;'>🚜 श्री बिहारी जी कोल्ड स्टोरेज</h1>
-        <p style='font-size: 18px;'>उदैतापुर, मनीमऊ, कन्नौज (उत्तर प्रदेश)</p>
+        <p style='font-size: 18px; margin: 5px 0;'>उदैतापुर, मनीमऊ, कन्नौज (उत्तर प्रदेश)</p>
+        <p style='font-size: 15px; margin: 5px 0;'>📧 shribiharijicoldstorage@gmail.com</p>
+        <p style='font-size: 15px; margin: 5px 0;'>📞 9838646586, 9621996103, 7007490379</p>
     </div>
 """, unsafe_allow_html=True)
 
-# साइडबार लॉगिन
-st.sidebar.title("Menu")
-login_type = st.sidebar.selectbox("विकल्प चुनें", ["Home", "Admin Login"])
+# 4. साइडबार मेन्यू
+menu = st.sidebar.selectbox("Main Menu", ["Home", "Admin Login"])
 
-if login_type == "Admin Login":
-    pwd = st.sidebar.text_input("Password", type="password")
-    if pwd == "bihariji123":
-        task = st.sidebar.radio("कार्य चुनें", ["Registration", "Amad Entry", "Loan Entry"])
+if menu == "Admin Login":
+    password = st.sidebar.text_input("Password", type="password")
+    if password == "bihariji123":
+        task = st.sidebar.radio("Select Task", ["Registration", "Amad Entry"])
         
-        # शीट के नाम (जो आपने अब बदल दिए हैं)
+        # शीट के नाम
         S_MASTER = "Master"
         S_AMAD = "Amad"
-        S_LOAN = "Loan"
 
+        # --- किसान पंजीकरण ---
         if task == "Registration":
             st.subheader("🆕 नया किसान पंजीकरण")
             try:
-                master_df = conn.read(worksheet=S_MASTER, ttl=5)
+                m_df = conn.read(worksheet=S_MASTER, ttl=0)
             except:
-                master_df = pd.DataFrame(columns=["Name", "Father Name", "Village Name", "Mobile Number", "Account Number"])
+                m_df = pd.DataFrame(columns=["Name", "Father Name", "Village", "Mobile Number", "Account Number"])
 
-            with st.form("reg_form"):
+            with st.form("reg_form", clear_on_submit=True):
                 n = st.text_input("किसान का नाम"); fn = st.text_input("पिता का नाम")
-                v = st.text_input("गाँव"); m = st.text_input("मोबाइल नंबर"); ac = st.text_input("अकाउंट नंबर")
-                if st.form_submit_button("डाटा सुरक्षित करें"):
-                    new_row = pd.DataFrame([{"Name": n, "Father Name": fn, "Village Name": v, "Mobile Number": m, "Account Number": ac}])
-                    updated_df = pd.concat([master_df, new_row], ignore_index=True)
-                    conn.create(worksheet=S_MASTER, data=updated_df)
-                    st.success("सफलतापूर्वक रजिस्टर किया गया!")
-
-        elif task == "Amad Entry":
-            st.subheader("📦 आमद (Stock) एंट्री")
-            try:
-                # डेटा लोड करना
-                master_df = conn.read(worksheet=S_MASTER, ttl=5)
-                amad_df = conn.read(worksheet=S_AMAD, ttl=5)
+                v = st.text_input("गाँव"); m = st.text_input("मोबाइल"); ac = st.text_input("अकाउंट नंबर")
                 
-                # ऑटो लॉट नंबर (Highest + 1)
-                max_lot = pd.to_numeric(amad_df['Lot Number'], errors='coerce').max()
-                next_lot = int(max_lot + 1) if not pd.isna(max_lot) else 1
+                if st.form_submit_button("सुरक्षित करें"):
+                    if n and ac:
+                        new_data = pd.DataFrame([{"Name": n, "Father Name": fn, "Village": v, "Mobile Number": m, "Account Number": ac}])
+                        updated_df = pd.concat([m_df, new_data], ignore_index=True)
+                        # एरर से बचने के लिए create का इस्तेमाल
+                        conn.create(worksheet=S_MASTER, data=updated_df)
+                        st.success("डाटा सुरक्षित हो गया!")
+                        st.cache_data.clear()
 
-                # किसान चुनने के लिए लिस्ट
-                s_list = (master_df['Name'] + " s/o " + master_df['Father Name']).tolist()
-                sel = st.selectbox("किसान खोजें", [""] + s_list)
+        # --- आमद एंट्री ---
+        elif task == "Amad Entry":
+            st.subheader("📦 नई आमद एंट्री")
+            try:
+                m_df = conn.read(worksheet=S_MASTER, ttl=0)
+                a_df = conn.read(worksheet=S_AMAD, ttl=0)
 
-                with st.form("amad_form"):
-                    dt = st.date_input("तारीख", datetime.now())
-                    lot = st.number_input("लॉट नंबर (Lot No.)", value=next_lot)
-                    pk = st.number_input("पैकेट की संख्या", min_value=1)
-                    tp = st.selectbox("किस्म (Type)", ["Oorja", "Lal", "Safed", "Halland", "Sindoori"])
+                # ऑटो लॉट नंबर
+                max_l = pd.to_numeric(a_df['Lot Number'], errors='coerce').max()
+                next_l = int(max_l + 1) if not pd.isna(max_l) else 1
+
+                farmers = (m_df['Name'] + " (" + m_df['Father Name'] + ")").tolist()
+                sel_f = st.selectbox("किसान चुनें", [""] + farmers)
+
+                with st.form("amad_form", clear_on_submit=True):
+                    d = st.date_input("तारीख", datetime.now()); l = st.number_input("लॉट नंबर", value=next_l)
+                    p = st.number_input("पैकेट", min_value=1); t = st.selectbox("किस्म", ["Oorja", "Lal", "Safed", "Halland", "Sindoori"])
                     
-                    if st.form_submit_button("एंट्री सेव करें") and sel != "":
-                        f_idx = s_list.index(sel)
-                        f_row = master_df.iloc[f_idx]
-                        new_amad = pd.DataFrame([{
-                            "Date": dt.strftime("%d-%m-%Y"),
-                            "Lot Number": lot,
-                            "Packet": pk,
-                            "Type": tp,
-                            "Name": f_row['Name'],
-                            "Father Name": f_row['Father Name'],
-                            "Account Number": f_row['Account Number']
+                    if st.form_submit_button("सेव करें") and sel_f != "":
+                        row = m_df.iloc[farmers.index(sel_f)]
+                        amad_row = pd.DataFrame([{
+                            "Date": d.strftime("%d-%m-%Y"), "Lot Number": l, "Packet": p, "Type": t,
+                            "Name": row['Name'], "Account Number": row['Account Number']
                         }])
-                        conn.create(worksheet=S_AMAD, data=pd.concat([amad_df, new_amad], ignore_index=True))
-                        st.success(f"लॉट नंबर {lot} सुरक्षित कर लिया गया है!")
-            except Exception as e:
-                st.error("शीट लोड नहीं हो रही। कृपया पक्का करें कि गूगल शीट में टैब का नाम 'Master' और 'Amad' ही है।")
+                        conn.create(worksheet=S_AMAD, data=pd.concat([a_df, amad_row], ignore_index=True))
+                        st.success(f"लॉट {l} सुरक्षित!")
+                        st.cache_data.clear()
+            except:
+                st.error("शीट लोड नहीं हुई। टैब के नाम चेक करें।")
 
 else:
-    st.info("स्वागत है! कृपया काम शुरू करने के लिए साइडबार से एडमिन लॉगिन करें।")
+    # वेलकम मैसेज हटा दिया गया है, सिर्फ खाली जगह दिखेगी
+    st.write("") 
+
