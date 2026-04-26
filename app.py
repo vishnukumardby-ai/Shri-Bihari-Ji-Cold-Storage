@@ -3,119 +3,87 @@ from streamlit_gsheets import GSheetsConnection
 import pandas as pd
 from datetime import datetime
 
-# वेबसाइट की सेटिंग
+# पेज सेटिंग
 st.set_page_config(page_title="Shri Bihari Ji Cold Storage", layout="wide")
 
-# भाषा चयन (Language Selection)
-lang = st.sidebar.radio("Select Language / भाषा चुनें", ["English", "Hindi"])
+# कनेक्शन
+conn = st.connection("gsheets", type=GSheetsConnection)
 
-# शब्दकोश (Dictionary for Translation)
-t = {
-    "title": "🚜 SHRI BIHARI JI COLD STORAGE" if lang == "English" else "🚜 श्री बिहारी जी कोल्ड स्टोरेज",
-    "addr": "Udaitapur, Manimau, Kannauj (U.P.)" if lang == "English" else "उदैतापुर, मनीमऊ, कन्नौज (उत्तर प्रदेश)",
-    "home": "Home Page" if lang == "English" else "होम पेज",
-    "k_login": "Farmer Login" if lang == "English" else "किसान लॉगिन",
-    "a_login": "Admin (Management)" if lang == "English" else "एडमिन (मैनेजमेंट)",
-    "welcome": "Welcome to Shri Bihari Ji Cold Storage" if lang == "English" else "श्री बिहारी जी कोल्ड स्टोरेज में आपका स्वागत है",
-    "mob": "Mobile Number" if lang == "English" else "मोबाइल नंबर",
-    "acc": "Account Number" if lang == "English" else "अकाउंट नंबर",
-    "signin_btn": "Sign In" if lang == "English" else "प्रवेश करें",
-    "save": "Save Data" if lang == "English" else "डाटा सुरक्षित करें",
-    "success": "Saved Successfully!" if lang == "English" else "सफलतापूर्वक सुरक्षित किया गया!",
-    "search": "Search Farmer..." if lang == "English" else "किसान खोजें...",
-    "v_no": "Voucher No." if lang == "English" else "वाउचर नंबर",
-    "name": "Name" if lang == "English" else "नाम",
-    "fname": "Father's Name" if lang == "English" else "पिता का नाम",
-    "vill": "Village" if lang == "English" else "गाँव",
-    "date": "Date" if lang == "English" else "तारीख",
-}
-
-# मुख्य हेडर
+# हेडर (सिर्फ नाम और पता)
 st.markdown(f"""
-    <div style='text-align: center; background-color: #1E3A8A; padding: 30px; border-radius: 15px; color: white;'>
-        <h1 style='margin-bottom: 5px; font-family: "Arial Black", sans-serif;'>{t['title']}</h1>
-        <p style='font-size: 22px; margin: 0;'><b>{t['addr']}</b></p>
-        <p style='font-size: 18px; margin: 10px 0;'>📧 shribiharijicoldstorage@gmail.com</p>
-        <p style='font-size: 18px; margin: 0;'>📞 9838646586, 9621996103, 7007490379</p>
+    <div style='text-align: center; background-color: #1E3A8A; padding: 20px; border-radius: 10px; color: white;'>
+        <h1 style='margin: 0;'>🚜 श्री बिहारी जी कोल्ड स्टोरेज</h1>
+        <p style='font-size: 18px;'>उदैतापुर, मनीमऊ, कन्नौज (उत्तर प्रदेश)</p>
     </div>
 """, unsafe_allow_html=True)
 
-conn = st.connection("gsheets", type=GSheetsConnection)
+# साइडबार लॉगिन
+st.sidebar.title("Menu")
+login_type = st.sidebar.selectbox("विकल्प चुनें", ["Home", "Admin Login"])
 
-# साइडबार लॉगिन टाइप
-st.sidebar.markdown(f"### 🔒 Login")
-login_type = st.sidebar.selectbox("Options", [t['home'], t['k_login'], t['a_login']])
-
-if login_type == t['home']:
-    st.markdown(f"<br><h2 style='text-align: center; color: #1E3A8A;'>{t['welcome']}</h2>", unsafe_allow_html=True)
-    st.info("आधुनिक तकनीक और सुरक्षित भंडारण। / Modern Technology & Secure Storage.")
-    
-    st.markdown("### 📸 Gallery")
-    col_img1, col_img2 = st.columns(2)
-    with col_img1: st.image("https://via.placeholder.com/600x400.png?text=Building+Photo", caption="Main Building")
-    with col_img2: st.image("https://via.placeholder.com/600x400.png?text=Storage+Photo", caption="Storage Area")
-
-elif login_type == t['a_login']:
+if login_type == "Admin Login":
     pwd = st.sidebar.text_input("Password", type="password")
     if pwd == "bihariji123":
-        task = st.sidebar.radio("Select Task", ["New Farmer Registration", "Amad Entry", "Loan Entry", "Bardana Entry"])
-        master_df = conn.read(worksheet="Farmers_Master")
+        task = st.sidebar.radio("कार्य चुनें", ["Registration", "Amad Entry", "Loan Entry"])
         
-        if "Registration" in task:
-            st.subheader("🆕 Registration")
-            with st.form("m_form"):
-                m_n = st.text_input(t['name']); m_fn = st.text_input(t['fname']); m_v = st.text_input(t['vill'])
-                m_a = st.text_input(t['acc']); m_m = st.text_input(t['mob'])
-                if st.form_submit_button(t['save']):
-                    new_m = pd.DataFrame([{"Name": m_n, "Father_Name": m_fn, "Village": m_v, "Account_No": m_a, "Mobile": m_m}])
-                    conn.update(worksheet="Farmers_Master", data=pd.concat([master_df, new_m], ignore_index=True))
-                    st.success(t['success'])
-        else:
-            st.subheader(f"📝 {task}")
-            s_list = (master_df['Name'] + " s/o " + master_df['Father_Name'] + " (" + master_df['Village'] + ")").tolist()
-            sel = st.selectbox(t['search'], [""] + s_list)
-            with st.form("v_form"):
-                f_d = master_df[s_list.index(sel)-1 == master_df.index] if sel else pd.DataFrame()
-                v_n = st.text_input(t['v_no']); dt = st.date_input(t['date'], datetime.now())
-                nm = st.text_input(t['name'], value=f_d['Name'].iloc[0] if not f_d.empty else "")
-                fn = st.text_input(t['fname'], value=f_d['Father_Name'].iloc[0] if not f_d.empty else "")
-                ac = f_d['Account_No'].iloc[0] if not f_d.empty else ""; st.info(f"A/c: {ac}")
-                vi = st.text_input(t['vill'], value=f_d['Village'].iloc[0] if not f_d.empty else "")
-                mb = f_d['Mobile'].iloc[0] if not f_d.empty else ""
+        # शीट के नाम (जो आपने अब बदल दिए हैं)
+        S_MASTER = "Master"
+        S_AMAD = "Amad"
+        S_LOAN = "Loan"
+
+        if task == "Registration":
+            st.subheader("🆕 नया किसान पंजीकरण")
+            try:
+                master_df = conn.read(worksheet=S_MASTER, ttl=5)
+            except:
+                master_df = pd.DataFrame(columns=["Name", "Father Name", "Village Name", "Mobile Number", "Account Number"])
+
+            with st.form("reg_form"):
+                n = st.text_input("किसान का नाम"); fn = st.text_input("पिता का नाम")
+                v = st.text_input("गाँव"); m = st.text_input("मोबाइल नंबर"); ac = st.text_input("अकाउंट नंबर")
+                if st.form_submit_button("डाटा सुरक्षित करें"):
+                    new_row = pd.DataFrame([{"Name": n, "Father Name": fn, "Village Name": v, "Mobile Number": m, "Account Number": ac}])
+                    updated_df = pd.concat([master_df, new_row], ignore_index=True)
+                    conn.update(worksheet=S_MASTER, data=updated_df)
+                    st.success("सफलतापूर्वक रजिस्टर किया गया!")
+
+        elif task == "Amad Entry":
+            st.subheader("📦 आमद (Stock) एंट्री")
+            try:
+                # डेटा लोड करना
+                master_df = conn.read(worksheet=S_MASTER, ttl=5)
+                amad_df = conn.read(worksheet=S_AMAD, ttl=5)
                 
-                if "Amad" in task:
-                    lot = st.text_input("Lot No"); pk = st.number_input("Packets", min_value=0)
-                elif "Loan" in task:
-                    ln = st.number_input("Amount (₹)", min_value=0)
-                elif "Bardana" in task:
-                    jt = st.number_input("Jute", min_value=0); pl = st.number_input("Plastic", min_value=0); ct = st.number_input("Cost", min_value=0)
+                # ऑटो लॉट नंबर (Highest + 1)
+                max_lot = pd.to_numeric(amad_df['Lot Number'], errors='coerce').max()
+                next_lot = int(max_lot + 1) if not pd.isna(max_lot) else 1
 
-                if st.form_submit_button(t['save']):
-                    sheet = "Amad" if "Amad" in task else ("Loan" if "Loan" in task else "Bardana")
-                    df = conn.read(worksheet=sheet)
-                    row = {"Date": dt.strftime("%d-%m-%Y"), "Voucher_No": v_n, "Name": nm, "Father_Name": fn, "Village": vi, "Account_No": ac, "Mobile": mb}
-                    if "Amad" in task: row.update({"Lot_No": lot, "Packets": pk})
-                    elif "Loan" in task: row.update({"Loan_Amount": ln})
-                    elif "Bardana" in task: row.update({"Jute_Bags": jt, "Plastic_Bags": pl, "Total_Bags_Cost": ct})
-                    conn.update(worksheet=sheet, data=pd.concat([df, pd.DataFrame([row])], ignore_index=True))
-                    st.success(t['success'])
+                # किसान चुनने के लिए लिस्ट
+                s_list = (master_df['Name'] + " s/o " + master_df['Father Name']).tolist()
+                sel = st.selectbox("किसान खोजें", [""] + s_list)
 
-elif login_type == t['k_login']:
-    st.subheader(f"👨‍🌾 {t['k_login']}")
-    k_m = st.text_input(t['mob']); k_a = st.text_input(t['acc'], type="password")
-    
-    if st.button(t['signin_btn']):
-        a_df = conn.read(worksheet="Amad"); l_df = conn.read(worksheet="Loan"); b_df = conn.read(worksheet="Bardana")
-        f_a = a_df[(a_df['Mobile'].astype(str) == str(k_m)) & (a_df['Account_No'].astype(str) == str(k_a))]
-        f_l = l_df[(l_df['Mobile'].astype(str) == str(k_m)) & (l_df['Account_No'].astype(str) == str(k_a))]
-        f_b = b_df[(b_df['Mobile'].astype(str) == str(k_m)) & (b_df['Account_No'].astype(str) == str(k_a))]
-        
-        if not f_a.empty or not f_l.empty:
-            nm_v = f_a['Name'].iloc[0] if not f_a.empty else f_l['Name'].iloc[0]
-            st.success(f"Welcome / स्वागत है, {nm_v} जी!")
-            tb1, tb2, tb3 = st.tabs(["Stock", "Loan", "Bags"])
-            with tb1: st.dataframe(f_a[['Date', 'Voucher_No', 'Lot_No', 'Packets']])
-            with tb2: st.dataframe(f_l[['Date', 'Voucher_No', 'Loan_Amount']])
-            with tb3: st.dataframe(f_b[['Date', 'Voucher_No', 'Jute_Bags', 'Plastic_Bags', 'Total_Bags_Cost']])
-        else:
-            st.error("Invalid Details / गलत जानकारी")
+                with st.form("amad_form"):
+                    dt = st.date_input("तारीख", datetime.now())
+                    lot = st.number_input("लॉट नंबर (Lot No.)", value=next_lot)
+                    pk = st.number_input("पैकेट की संख्या", min_value=1)
+                    tp = st.selectbox("किस्म (Type)", ["Oorja", "Lal", "Safed", "Halland", "Sindoori"])
+                    
+                    if st.form_submit_button("एंट्री सेव करें") and sel != "":
+                        f_idx = s_list.index(sel)
+                        f_row = master_df.iloc[f_idx]
+                        new_amad = pd.DataFrame([{
+                            "Date": dt.strftime("%d-%m-%Y"),
+                            "Lot Number": lot,
+                            "Packet": pk,
+                            "Type": tp,
+                            "Name": f_row['Name'],
+                            "Father Name": f_row['Father Name'],
+                            "Account Number": f_row['Account Number']
+                        }])
+                        conn.update(worksheet=S_AMAD, data=pd.concat([amad_df, new_amad], ignore_index=True))
+                        st.success(f"लॉट नंबर {lot} सुरक्षित कर लिया गया है!")
+            except Exception as e:
+                st.error("शीट लोड नहीं हो रही। कृपया पक्का करें कि गूगल शीट में टैब का नाम 'Master' और 'Amad' ही है।")
+
+else:
+    st.info("स्वागत है! कृपया काम शुरू करने के लिए साइडबार से एडमिन लॉगिन करें।")
