@@ -22,6 +22,12 @@ t = {
     "signin_btn": "Sign In" if lang == "English" else "प्रवेश करें",
     "save": "Save Data" if lang == "English" else "डाटा सुरक्षित करें",
     "success": "Saved Successfully!" if lang == "English" else "सफलतापूर्वक सुरक्षित किया गया!",
+    "search": "Search Farmer..." if lang == "English" else "किसान खोजें...",
+    "v_no": "Voucher No." if lang == "English" else "वाउचर नंबर",
+    "name": "Name" if lang == "English" else "नाम",
+    "fname": "Father's Name" if lang == "English" else "पिता का नाम",
+    "vill": "Village" if lang == "English" else "गाँव",
+    "date": "Date" if lang == "English" else "तारीख",
 }
 
 # मुख्य हेडर
@@ -42,7 +48,7 @@ login_type = st.sidebar.selectbox("Options", [t['home'], t['k_login'], t['a_logi
 
 if login_type == t['home']:
     st.markdown(f"<br><h2 style='text-align: center; color: #1E3A8A;'>{t['welcome']}</h2>", unsafe_allow_html=True)
-    st.info("विष्णु कुमार दुबे जी के कुशल मार्गदर्शन में। / Under the guidance of Vishnu Kumar Dubey.")
+    st.info("आधुनिक तकनीक और सुरक्षित भंडारण। / Modern Technology & Secure Storage.")
     
     st.markdown("### 📸 Gallery")
     col_img1, col_img2 = st.columns(2)
@@ -55,33 +61,61 @@ elif login_type == t['a_login']:
         task = st.sidebar.radio("Select Task", ["New Farmer Registration", "Amad Entry", "Loan Entry", "Bardana Entry"])
         master_df = conn.read(worksheet="Farmers_Master")
         
-        # ... (Admin code remains same as previous version) ...
-        # (Writing short for brevity, ensure you keep the full logic from previous code)
+        if "Registration" in task:
+            st.subheader("🆕 Registration")
+            with st.form("m_form"):
+                m_n = st.text_input(t['name']); m_fn = st.text_input(t['fname']); m_v = st.text_input(t['vill'])
+                m_a = st.text_input(t['acc']); m_m = st.text_input(t['mob'])
+                if st.form_submit_button(t['save']):
+                    new_m = pd.DataFrame([{"Name": m_n, "Father_Name": m_fn, "Village": m_v, "Account_No": m_a, "Mobile": m_m}])
+                    conn.update(worksheet="Farmers_Master", data=pd.concat([master_df, new_m], ignore_index=True))
+                    st.success(t['success'])
+        else:
+            st.subheader(f"📝 {task}")
+            s_list = (master_df['Name'] + " s/o " + master_df['Father_Name'] + " (" + master_df['Village'] + ")").tolist()
+            sel = st.selectbox(t['search'], [""] + s_list)
+            with st.form("v_form"):
+                f_d = master_df[s_list.index(sel)-1 == master_df.index] if sel else pd.DataFrame()
+                v_n = st.text_input(t['v_no']); dt = st.date_input(t['date'], datetime.now())
+                nm = st.text_input(t['name'], value=f_d['Name'].iloc[0] if not f_d.empty else "")
+                fn = st.text_input(t['fname'], value=f_d['Father_Name'].iloc[0] if not f_d.empty else "")
+                ac = f_d['Account_No'].iloc[0] if not f_d.empty else ""; st.info(f"A/c: {ac}")
+                vi = st.text_input(t['vill'], value=f_d['Village'].iloc[0] if not f_d.empty else "")
+                mb = f_d['Mobile'].iloc[0] if not f_d.empty else ""
+                
+                if "Amad" in task:
+                    lot = st.text_input("Lot No"); pk = st.number_input("Packets", min_value=0)
+                elif "Loan" in task:
+                    ln = st.number_input("Amount (₹)", min_value=0)
+                elif "Bardana" in task:
+                    jt = st.number_input("Jute", min_value=0); pl = st.number_input("Plastic", min_value=0); ct = st.number_input("Cost", min_value=0)
+
+                if st.form_submit_button(t['save']):
+                    sheet = "Amad" if "Amad" in task else ("Loan" if "Loan" in task else "Bardana")
+                    df = conn.read(worksheet=sheet)
+                    row = {"Date": dt.strftime("%d-%m-%Y"), "Voucher_No": v_n, "Name": nm, "Father_Name": fn, "Village": vi, "Account_No": ac, "Mobile": mb}
+                    if "Amad" in task: row.update({"Lot_No": lot, "Packets": pk})
+                    elif "Loan" in task: row.update({"Loan_Amount": ln})
+                    elif "Bardana" in task: row.update({"Jute_Bags": jt, "Plastic_Bags": pl, "Total_Bags_Cost": ct})
+                    conn.update(worksheet=sheet, data=pd.concat([df, pd.DataFrame([row])], ignore_index=True))
+                    st.success(t['success'])
 
 elif login_type == t['k_login']:
     st.subheader(f"👨‍🌾 {t['k_login']}")
+    k_m = st.text_input(t['mob']); k_a = st.text_input(t['acc'], type="password")
     
-    # इनपुट बॉक्स
-    k_m = st.text_input(t['mob'])
-    k_a = st.text_input(t['acc'], type="password")
-    
-    # यहाँ बदलाव किया गया है - बटन का नाम भाषा के अनुसार बदलेगा
     if st.button(t['signin_btn']):
-        a_df = conn.read(worksheet="Amad")
-        l_df = conn.read(worksheet="Loan")
-        b_df = conn.read(worksheet="Bardana")
-        
+        a_df = conn.read(worksheet="Amad"); l_df = conn.read(worksheet="Loan"); b_df = conn.read(worksheet="Bardana")
         f_a = a_df[(a_df['Mobile'].astype(str) == str(k_m)) & (a_df['Account_No'].astype(str) == str(k_a))]
         f_l = l_df[(l_df['Mobile'].astype(str) == str(k_m)) & (l_df['Account_No'].astype(str) == str(k_a))]
         f_b = b_df[(b_df['Mobile'].astype(str) == str(k_m)) & (b_df['Account_No'].astype(str) == str(k_a))]
         
         if not f_a.empty or not f_l.empty:
-            name_val = f_a['Name'].iloc[0] if not f_a.empty else f_l['Name'].iloc[0]
-            st.success(f"Welcome / स्वागत है, {name_val} जी!")
-            
-            tb1, tb2, tb3 = st.tabs(["Stock (Amad)", "Loan", "Bags (Bardana)"])
-            with tb1: st.dataframe(f_a)
-            with tb2: st.dataframe(f_l)
-            with tb3: st.dataframe(f_b)
+            nm_v = f_a['Name'].iloc[0] if not f_a.empty else f_l['Name'].iloc[0]
+            st.success(f"Welcome / स्वागत है, {nm_v} जी!")
+            tb1, tb2, tb3 = st.tabs(["Stock", "Loan", "Bags"])
+            with tb1: st.dataframe(f_a[['Date', 'Voucher_No', 'Lot_No', 'Packets']])
+            with tb2: st.dataframe(f_l[['Date', 'Voucher_No', 'Loan_Amount']])
+            with tb3: st.dataframe(f_b[['Date', 'Voucher_No', 'Jute_Bags', 'Plastic_Bags', 'Total_Bags_Cost']])
         else:
             st.error("Invalid Details / गलत जानकारी")
