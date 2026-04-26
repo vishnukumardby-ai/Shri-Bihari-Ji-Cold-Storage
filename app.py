@@ -1,95 +1,117 @@
-
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
 from datetime import datetime
 
-st.set_page_config(page_title="श्री बिहारी जी कोल्ड स्टोरेज", layout="wide")
-st.title("🚜 श्री बिहारी जी कोल्ड स्टोरेज - डिजिटल मुनीम")
+# वेबसाइट की सेटिंग
+st.set_page_config(page_title="Shri Bihari Ji Cold Storage", layout="wide")
+
+# मुख्य हेडर (डिजिटल मुनीम हटा दिया गया है)
+st.markdown("""
+    <div style='text-align: center; background-color: #f8fafc; padding: 25px; border: 2px solid #1E3A8A; border-radius: 15px;'>
+        <h1 style='color: #1E3A8A; margin-bottom: 5px; font-family: "Arial", sans-serif;'>🚜 SHRI BIHARI JI COLD STORAGE</h1>
+        <p style='font-size: 20px; color: #1e293b; margin: 0;'><b>Udaitapur, Manimau, Kannauj (Uttar Pradesh)</b></p>
+        <p style='font-size: 16px; margin: 8px 0;'>📧 shribiharijicoldstorage@gmail.com</p>
+        <p style='font-size: 16px; margin: 0;'>📞 9838646586, 9621996103, 7007490379</p>
+    </div>
+    <br>
+""", unsafe_allow_html=True)
 
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-# साइडबार - लॉगिन टाइप
+# साइडबार लॉगिन
 login_type = st.sidebar.selectbox("लॉगिन चुनें", ["किसान लॉगिन", "एडमिन (मैनेजमेंट)"])
 
 if login_type == "एडमिन (मैनेजमेंट)":
     pwd = st.sidebar.text_input("पासवर्ड", type="password")
     if pwd == "bihariji123":
         st.sidebar.success("लॉगिन सफल")
-        task = st.sidebar.radio("वाउचर चुनें", ["आमद (Stock)", "लोन (Loan)", "बारदाना (Bags)"])
+        task = st.sidebar.radio("काम चुनें", ["नया किसान जोड़ें (Master)", "आमद (Amad)", "लोन (Loan)", "बारदाना (Bardana)"])
         
-        st.subheader(f"📝 {task} वाउचर एंट्री")
-        with st.form("admin_form"):
-            col1, col2 = st.columns(2)
-            with col1:
-                v_no = st.text_input("वाउचर नंबर")
-                acc_no = st.text_input("किसान अकाउंट नंबर (A/c No.)")
-                name = st.text_input("किसान का नाम")
-                f_name = st.text_input("पिता का नाम")
-            with col2:
-                date = st.date_input("तारीख", datetime.now())
-                village = st.text_input("गाँव")
-                mobile = st.text_input("मोबाइल नंबर")
-                
-                if task == "आमद (Stock)":
-                    lot = st.text_input("लॉट नंबर")
-                    pkts = st.number_input("पैकेट की संख्या", min_value=0, step=1)
-                elif task == "लोन (Loan)":
-                    loan = st.number_input("लोन राशि (₹)", min_value=0, step=100)
-                elif task == "बारदाना (Bags)":
-                    jute = st.number_input("जूट बैग गिनती", min_value=0, step=1)
-                    plastic = st.number_input("प्लास्टिक बैग गिनती", min_value=0, step=1)
-                    rate = st.number_input("कुल कीमत (₹)", min_value=0, step=10)
+        master_df = conn.read(worksheet="Farmers_Master")
+        
+        if task == "नया किसान जोड़ें (Master)":
+            st.subheader("🆕 नए किसान का रजिस्ट्रेशन")
+            with st.form("master_form"):
+                m_name = st.text_input("किसान का नाम")
+                m_fname = st.text_input("पिता का नाम")
+                m_vill = st.text_input("गाँव")
+                m_acc = st.text_input("अकाउंट नंबर (A/c No.)")
+                m_mob = st.text_input("मोबाइल नंबर")
+                if st.form_submit_button("मास्टर लिस्ट में सेव करें"):
+                    new_m = pd.DataFrame([{"Name": m_name, "Father_Name": m_fname, "Village": m_vill, "Account_No": m_acc, "Mobile": m_mob}])
+                    updated_master = pd.concat([master_df, new_m], ignore_index=True)
+                    conn.update(worksheet="Farmers_Master", data=updated_master)
+                    st.success("किसान मास्टर लिस्ट में जुड़ गया!")
 
-            submitted = st.form_submit_button("डाटा सुरक्षित करें")
-            if submitted:
-                df = conn.read()
-                new_row = {
-                    "Voucher_Type": task, "Date": date.strftime("%d-%m-%Y"), "Voucher_No": v_no,
-                    "Name": name, "Father_Name": f_name, "Village": village, 
-                    "Account_No": acc_no, "Mobile": mobile,
-                    "Lot_No": lot if task=="आमद (Stock)" else "",
-                    "Packets": pkts if task=="आमद (Stock)" else 0,
-                    "Loan_Amount": loan if task=="लोन (Loan)" else 0,
-                    "Jute_Bags": jute if task=="बारदाना (Bags)" else 0,
-                    "Plastic_Bags": plastic if task=="बारदाना (Bags)" else 0,
-                    "Total_Bags_Cost": rate if task=="बारदाना (Bags)" else 0
-                }
-                updated_df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-                conn.update(data=updated_df)
-                st.success(f"बधाई हो! {task} वाउचर सफलतापूर्वक सेव हो गया।")
+        else:
+            st.subheader(f"📝 {task} वाउचर एंट्री")
+            search_list = (master_df['Name'] + " s/o " + master_df['Father_Name'] + " (" + master_df['Village'] + ")").tolist()
+            selected_farmer = st.selectbox("किसान खोजें (यहाँ टाइप करें...)", [""] + search_list)
+            
+            with st.form("voucher_form"):
+                col1, col2 = st.columns(2)
+                f_data = master_df[search_list.index(selected_farmer)-1 == master_df.index] if selected_farmer else pd.DataFrame()
+                
+                with col1:
+                    v_no = st.text_input("वाउचर नंबर")
+                    name = st.text_input("नाम", value=f_data['Name'].iloc[0] if not f_data.empty else "")
+                    f_name = st.text_input("पिता का नाम", value=f_data['Father_Name'].iloc[0] if not f_data.empty else "")
+                    acc_no = f_data['Account_No'].iloc[0] if not f_data.empty else ""
+                    st.info(f"Account No: {acc_no}")
+                with col2:
+                    date = st.date_input("तारीख", datetime.now())
+                    village = st.text_input("गाँव", value=f_data['Village'].iloc[0] if not f_data.empty else "")
+                    mobile = f_data['Mobile'].iloc[0] if not f_data.empty else ""
+
+                if task == "Amad":
+                    lot = st.text_input("लॉट नंबर")
+                    pkts = st.number_input("पैकेट संख्या", min_value=0, step=1)
+                elif task == "Loan":
+                    loan = st.number_input("लोन राशि (₹)", min_value=0, step=100)
+                elif task == "Bardana":
+                    jute = st.number_input("जूट बैग", min_value=0)
+                    plastic = st.number_input("प्लास्टिक बैग", min_value=0)
+                    cost = st.number_input("कुल कीमत (₹)", min_value=0)
+
+                if st.form_submit_button("वाउचर सुरक्षित करें"):
+                    df = conn.read(worksheet=task)
+                    row = {"Date": date.strftime("%d-%m-%Y"), "Voucher_No": v_no, "Name": name, "Father_Name": f_name, 
+                           "Village": village, "Account_No": acc_no, "Mobile": mobile}
+                    if task == "Amad": row.update({"Lot_No": lot, "Packets": pkts})
+                    elif task == "Loan": row.update({"Loan_Amount": loan})
+                    elif task == "Bardana": row.update({"Jute_Bags": jute, "Plastic_Bags": plastic, "Total_Bags_Cost": cost})
+                    
+                    updated_df = pd.concat([df, pd.DataFrame([row])], ignore_index=True)
+                    conn.update(worksheet=task, data=updated_df)
+                    st.success(f"{task} एंट्री सफल!")
 
 elif login_type == "किसान लॉगिन":
-    st.subheader("👨‍🌾 किसान भाई अपना रिकॉर्ड देखें")
-    st.info("विवरण देखने के लिए अपनी सही जानकारी भरें")
-    
+    st.subheader("👨‍🌾 किसान पोर्टल")
     col_k1, col_k2 = st.columns(2)
     with col_k1:
-        k_name = st.text_input("अपना नाम लिखें")
-        k_fname = st.text_input("पिता का नाम लिखें")
+        k_name = st.text_input("किसान का नाम")
+        k_acc = st.text_input("अकाउंट नंबर", type="password")
     with col_k2:
-        k_village = st.text_input("गाँव का नाम")
-        k_acc = st.text_input("अपना अकाउंट नंबर (Account No.) डालें", type="password")
-    
-    if st.button("अपना हिसाब देखें"):
-        data = conn.read()
-        # सुरक्षा फिल्टर
-        result = data[
-            (data['Name'].str.contains(k_name, case=False, na=False)) & 
-            (data['Father_Name'].str.contains(k_fname, case=False, na=False)) & 
-            (data['Village'].str.contains(k_village, case=False, na=False)) & 
-            (data['Account_No'].astype(str) == str(k_acc))
-        ]
+        k_fname = st.text_input("पिता का नाम")
+        k_vill = st.text_input("गाँव")
+
+    if st.button("रिकॉर्ड देखें"):
+        amad_df = conn.read(worksheet="Amad")
+        loan_df = conn.read(worksheet="Loan")
+        bard_df = conn.read(worksheet="Bardana")
         
-        if not result.empty:
-            st.success(f"नमस्ते {k_name} जी! आपका रिकॉर्ड नीचे है:")
-            st.dataframe(result[["Date", "Voucher_Type", "Voucher_No", "Lot_No", "Packets", "Loan_Amount", "Total_Bags_Cost"]])
+        f_amad = amad_df[amad_df['Account_No'].astype(str) == str(k_acc)]
+        f_loan = loan_df[loan_df['Account_No'].astype(str) == str(k_acc)]
+        f_bard = bard_df[bard_df['Account_No'].astype(str) == str(k_acc)]
+        
+        if not f_amad.empty or not f_loan.empty:
+            st.success(f"नमस्ते {k_name} जी!")
+            t1, t2, t3 = st.tabs(["स्टॉक विवरण", "लोन हिसाब", "बारदाना"])
+            with t1: st.dataframe(f_amad)
+            with t2: st.dataframe(f_loan)
+            with t3: st.dataframe(f_bard)
             
-            # कुल हिसाब
-            t_pkts = result['Packets'].sum()
-            t_loan = result['Loan_Amount'].sum()
-            t_bags = result['Total_Bags_Cost'].sum()
-            st.markdown(f"### 📊 कुल बैलेंस रिपोर्ट:")
-            st.write(f"📦 कुल पैकेट: **{t_pkts}** | 💰 कुल लोन: **₹{t_loan}** | 🎒 बारदाना खर्च: **₹{t_bags}**")
+            st.markdown(f"### 📊 कुल बैलेंस: \n **पैकेट:** {f_amad['Packets'].sum()} | **लोन बकाया:** ₹{f_loan['Loan_Amount'].sum()} | **बारदाना खर्च:** ₹{f_bard['Total_Bags_Cost'].sum()}")
         else:
-            st.error("जानकारी मेल नहीं खा रही है। कृपया अपना विवरण और अकाउंट नंबर सही भरें।")
+            st.error("कोई जानकारी नहीं मिली। कृपया अकाउंट नंबर जाँचें।")
