@@ -44,7 +44,7 @@ if login_type == "Admin Login":
                 if st.form_submit_button("डाटा सुरक्षित करें"):
                     new_row = pd.DataFrame([{"Name": n, "Father Name": fn, "Village Name": v, "Mobile Number": m, "Account Number": ac}])
                     updated_df = pd.concat([master_df, new_row], ignore_index=True)
-                    conn.update(worksheet=S_MASTER, data=updated_df)
+                    conn.create(worksheet=S_MASTER, data=updated_df)
                     st.success("सफलतापूर्वक रजिस्टर किया गया!")
 
         elif task == "Amad Entry":
@@ -80,7 +80,7 @@ if login_type == "Admin Login":
                             "Father Name": f_row['Father Name'],
                             "Account Number": f_row['Account Number']
                         }])
-                        conn.update(worksheet=S_AMAD, data=pd.concat([amad_df, new_amad], ignore_index=True))
+                        conn.create(worksheet=S_AMAD, data=pd.concat([amad_df, new_amad], ignore_index=True))
                         st.success(f"लॉट नंबर {lot} सुरक्षित कर लिया गया है!")
             except Exception as e:
                 st.error("शीट लोड नहीं हो रही। कृपया पक्का करें कि गूगल शीट में टैब का नाम 'Master' और 'Amad' ही है।")
