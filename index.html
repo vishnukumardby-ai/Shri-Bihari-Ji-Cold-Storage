@@ -11,27 +11,47 @@
             line-height: 1.6; 
             background: #f4f4f4;
         }
-        .lang-switch {
+        .top-bar {
             position: fixed;
-            top: 15px;
-            right: 15px;
-            z-index: 999;
+            top: 0;
+            width: 100%;
             background: #1e3a8a;
-            color: white;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 999;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .login-btn {
+            background: #fbbf24;
+            color: #1e3a8a;
             border: none;
-            padding: 10px 18px;
-            border-radius: 25px;
+            padding: 8px 15px;
+            border-radius: 20px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            font-size: 14px;
+            text-decoration: none;
         }
-        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .lang-switch {
+            background: white;
+            color: #1e3a8a;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 80px 20px 20px; }
         .header { 
             background: linear-gradient(135deg, #1e3a8a, #3b82f6); 
             color: white; 
-            padding: 60px 20px 40px; 
+            padding: 40px 20px; 
             text-align: center; 
             border-radius: 0 0 20px 20px;
+            margin-top: 0;
         }
         .header h1 { font-size: 2rem; margin-bottom: 10px; }
         .card { 
@@ -66,7 +86,10 @@
     </style>
 </head>
 <body>
-    <button class="lang-switch" onclick="toggleLang()">English</button>
+    <div class="top-bar">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfxYpfP-nYg12BqgaV7OJVGb5lwmAuBPrfyh1INuVw2c5k8zw/viewform?usp=publish-editor" target="_blank" class="login-btn">👨‍🌾 Kisan Login</a>
+        <button class="lang-switch" onclick="toggleLang()">English</button>
+    </div>
 
     <!-- Hindi Content -->
     <div id="content-hi">
