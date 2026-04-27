@@ -83,6 +83,26 @@
         .footer { text-align: center; padding: 20px; color: #666; }
         .hidden { display: none !important; }
         p { margin: 8px 0; }
+        .notice-board {
+            background:#fff3cd; 
+            border-left:6px solid #ff9800; 
+            padding:15px; 
+            margin:20px 0; 
+            border-radius:8px; 
+            box-shadow:0 2px 4px rgba(0,0,0,0.1);
+        }
+        .notice-board h3 {
+            margin:0 0 10px 0; 
+            color:#b45309; 
+            font-size:20px;
+        }
+        .notice-board iframe {
+            width:100%; 
+            height:250px; 
+            border:none; 
+            background:white; 
+            border-radius:4px;
+        }
     </style>
 </head>
 <body>
@@ -99,6 +119,13 @@
         </div>
 
         <div class="container">
+            <!-- Notice Board Start -->
+            <div class="notice-board">
+                <h3>📢 जरूरी सूचना</h3>
+                <iframe src="https://docs.google.com/document/d/1voPS_hDu5zxabb0oN79te3J3niYgtyYxiuSorHASdm0/preview"></iframe>
+            </div>
+            <!-- Notice Board End -->
+
             <div class="card">
                 <h2>📞 संपर्क करें</h2>
                 <p><strong>पता:</strong> उदैतापुर, मनीमऊ, कन्नौज (U.P.) 209727</p>
@@ -149,6 +176,13 @@
         </div>
 
         <div class="container">
+            <!-- Notice Board Start -->
+            <div class="notice-board">
+                <h3>📢 Important Notice</h3>
+                <iframe src="https://docs.google.com/document/d/1voPS_hDu5zxabb0oN79te3J3niYgtyYxiuSorHASdm0/preview"></iframe>
+            </div>
+            <!-- Notice Board End -->
+
             <div class="card">
                 <h2>📞 Contact Us</h2>
                 <p><strong>Address:</strong> Udaitapur, Manimau, Kannauj (U.P.) 209727</p>
@@ -192,14 +226,4 @@
     </div>
 
     <script>
-        let isHindi = true;
-        function toggleLang() {
-            isHindi = !isHindi;
-            document.getElementById('content-hi').classList.toggle('hidden');
-            document.getElementById('content-en').classList.toggle('hidden');
-            document.querySelector('.lang-switch').textContent = isHindi ? 'English' : 'हिंदी';
-            document.documentElement.lang = isHindi ? 'hi' : 'en';
-        }
-    </script>
-</body>
-</html>
+        let
