@@ -3,80 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shri Bihari Ji Cold Storage - Manimau, Kannauj</title>
+    <title>Shri Bihari Ji Cold Storage - Kannauj</title>
     <style>
-        * {margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif;}
-        body {line-height: 1.6; color: #333;}
-        .header {background: #1e40af; color: white; padding: 15px 0; text-align: center;}
-        .header h1 {font-size: 28px;}
-        .header p {font-size: 14px; opacity: 0.9;}
-        .hero {background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1200') center/cover; color: white; text-align: center; padding: 80px 20px;}
-        .hero h2 {font-size: 36px; margin-bottom: 10px;}
-        .btn {display: inline-block; background: #f59e0b; color: #000; padding: 12px 25px; margin-top: 20px; text-decoration: none; font-weight: bold; border-radius: 5px;}
-        .section {padding: 50px 20px; max-width: 1000px; margin: auto;}
-        .section h3 {text-align: center; font-size: 28px; color: #1e40af; margin-bottom: 30px;}
-        .cards {display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;}
-        .card {background: #f3f4f6; padding: 25px; border-radius: 8px; flex: 1 1 250px; text-align: center; border-top: 4px solid #1e40af;}
-        .card h4 {margin-bottom: 10px; font-size: 20px;}
-        .contact {background: #1e40af; color: white;}
-        .contact a {color: #f59e0b; text-decoration: none; font-weight: bold;}
-        .footer {background: #111827; color: #9ca3af; text-align: center; padding: 15px; font-size: 14px;}
-        @media(max-width:600px){.hero h2{font-size:24px} .header h1{font-size:22px}}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            line-height: 1.6; 
+            background: #f4f4f4;
+        }
+        .lang-switch {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 999;
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .lang-switch:hover { background: #1e40af; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { 
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6); 
+            color: white; 
+            padding: 60px 20px 40px; 
+            text-align: center; 
+            border-radius: 0 0 20px 20px;
+        }
+        .header h1 { font-size: 2.2rem; margin-bottom: 10px; }
+        .card { 
+            background: white; 
+            padding: 25px; 
+            margin: 20px 0; 
+            border-radius: 15px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .card h2 { color: #1e3a8a; margin-bottom: 15px; }
+        .number-row {
+            margin: 12px 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn {
+            display: inline-block;
+            background: #25D366;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .btn-call { background: #3b82f6; }
+        .footer { text-align: center; padding: 20px; color: #666; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
+    <button class="lang-switch" onclick="toggleLang()">English</button>
 
-    <div class="header">
-        <h1>Shri Bihari Ji Cold Storage</h1>
-        <p>Udaitapur, Manimau, Kannauj - 209725</p>
-    </div>
-
-    <div class="hero">
-        <h2>आलू सुरक्षित, मुनाफा निश्चित</h2>
-        <p>कन्नौज के किसानों के लिए आधुनिक कोल्ड स्टोरेज सुविधा</p>
-        <a href="tel:+91XXXXXXXXXX" class="btn">अभी कॉल करें</a>
-    </div>
-
-    <div class="section">
-        <h3>हमारी सेवाएं</h3>
-        <div class="cards">
-            <div class="card">
-                <h4>❄️ आलू भंडारण</h4>
-                <p>0°C से 4°C तापमान पर वैज्ञानिक तरीके से आलू का भंडारण। 6-8 महीने तक फ्रेश।</p>
-            </div>
-            <div class="card">
-                <h4>⚖️ सही तौल</h4>
-                <p>डिजिटल कांटा। किसान के सामने तौल। पूरी पारदर्शिता।</p>
-            </div>
-            <div class="card">
-                <h4>💰 आसान भुगतान</h4>
-                <p>स्टोरेज रसीद पर बैंक से लोन की सुविधा। समय पर पेमेंट।</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="section" style="background:#f9fafb;">
-        <h3>कोल्ड स्टोरेज क्यों जरूरी?</h3>
-        <p style="text-align:center; max-width:700px; margin:auto;">
-            आलू की खुदाई के समय रेट कम रहते हैं। कोल्ड स्टोरेज में रखकर आप 4-6 महीने बाद 
-            बेच सकते हैं जब बाजार में रेट ₹1500-2000/क्विंटल तक पहुंच जाते हैं। 
-            <b>1 ट्रॉली पर ₹40,000 तक एक्स्ट्रा मुनाफा।</b>
-        </p>
-    </div>
-
-    <div class="section contact">
-        <h3 style="color:white;">संपर्क करें</h3>
-        <div style="text-align:center; font-size:18px;">
-            <p><b>पता:</b> ग्राम उदैतापुर, मनिमऊ, जिला कन्नौज, UP - 209725</p>
-            <p><b>मोबाइल:</b> <a href="tel:+91XXXXXXXXXX">+91 XXXXX XXXXX</a></p>
-            <p><b>WhatsApp:</b> <a href="https://wa.me/91XXXXXXXXXX">मैसेज करें</a></p>
-            <p style="margin-top:20px;"><b>बुकिंग शुरू:</b> फरवरी से मार्च तक</p>
-        </div>
-    </div>
-
-    <div class="footer">
-        © 2026 Shri Bihari Ji Cold Storage | Manimau, Kannauj | सभी किसान भाइयों को समर्पित
-    </div>
-
-</body>
-</html>
+    <!-- Hindi Content -->
+    <div id="content-hi">
+        <div class="header">
+            <h1>❄️ श्री बिहारी जी कोल्ड स्टोरेज</h1>
+            <p>उदैतापुर, मनीमऊ, कन्नौज (U.P.) 209727</p>
