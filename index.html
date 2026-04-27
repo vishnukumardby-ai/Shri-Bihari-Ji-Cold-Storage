@@ -111,7 +111,7 @@
         <div class="container">
             <div class="card">
                 <h2>📞 संपर्क करें</h2>
-                <p><strong>पता:</strong> उदैतापुर, मनीमऊ, कन्नौज (U.P.) 209727</p>
+                <p><strong>पता:</strong> उदैतापुर, मानीमऊ, कन्नौज (U.P.) 209727</p>
 
                 <div class="number-row">
                     <span><strong>📱 9838646586</strong></span>
@@ -189,57 +189,3 @@
                 </div>
 
                 <div class="number-row">
-                    <span><strong>📱 7007490379</strong></span>
-                    <a href="tel:7007490379" class="btn btn-call">Call</a>
-                    <a href="https://wa.me/917007490379?text=Hello,%20I%20want%20to%20store%20potatoes" class="btn">WhatsApp</a>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>🥔 Our Services</h2>
-                <p>✓ Potato Storage with Modern Technology</p>
-                <p>✓ Safe Storage at Reasonable Rates</p>
-                <p>✓ Easy Booking for Farmers</p>
-            </div>
-
-            <div class="card">
-                <h2>💰 Rates</h2>
-                <p>Rates change as per season.</p>
-                <p><strong>Please Call or WhatsApp for latest rates.</strong></p>
-            </div>
-        </div>
-
-        <div class="footer">
-            <p>© 2026 Shri Bihari Ji Cold Storage | All Rights Reserved</p>
-        </div>
-    </div>
-
-    <script>
-        let isHindi = true;
-        function toggleLang() {
-            isHindi =!isHindi;
-            document.getElementById('content-hi').classList.toggle('hidden');
-            document.getElementById('content-en').classList.toggle('hidden');
-        }
-
-        const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTg5MuVOg5WRi_8gL-NDJJVKJ2eInyJPsE1rYOoLrftzlIfCwfYkIGK-hjpG-9H3-WJ48s5Iyrxrnnd/pub?output=csv';
-
-        fetch(sheetURL)
-      .then(res => res.text())
-      .then(data => {
-            let notice = data.split('\n')[0].replace(/"/g, '').trim();
-            if(notice) {
-              document.getElementById('noticeText').innerHTML = '📢 ' + notice;
-              document.getElementById('noticeTextEn').innerHTML = '📢 ' + notice;
-            } else {
-              document.getElementById('noticeText').innerHTML = '📢 ताजा जानकारी के लिए कॉल करें: 9838646586';
-              document.getElementById('noticeTextEn').innerHTML = '📢 Call for latest info: 9838646586';
-            }
-          })
-      .catch(err => {
-            document.getElementById('noticeText').innerHTML = '📢 ताजा जानकारी के लिए कॉल करें: 9838646586';
-            document.getElementById('noticeTextEn').innerHTML = '📢 Call for latest info: 9838646586';
-          });
-    </script>
-</body>
-</html>
