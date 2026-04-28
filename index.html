@@ -11,7 +11,7 @@
             line-height: 1.6;
             background: #f4f4f4;
         }
- .top-bar {
+       .top-bar {
             width: 100%;
             background: #1e3a8a;
             padding: 10px 15px;
@@ -19,8 +19,15 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            flex-wrap: wrap;
+            gap: 8px;
         }
- .login-btn {
+       .left-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+       .login-btn {
             background: #fbbf24;
             color: #1e3a8a;
             border: none;
@@ -31,7 +38,11 @@
             font-size: 14px;
             text-decoration: none;
         }
- .lang-switch {
+       .login-btn.emp {
+            background: #10b981;
+            color: white;
+        }
+       .lang-switch {
             background: white;
             color: #1e3a8a;
             border: none;
@@ -41,30 +52,30 @@
             cursor: pointer;
             font-size: 14px;
         }
- .container { max-width: 900px; margin: 0 auto; padding: 20px; }
- .header {
+       .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+       .header {
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: white;
             padding: 40px 20px;
             text-align: center;
         }
- .header h1 { font-size: 2rem; margin-bottom: 10px; }
- .card {
+       .header h1 { font-size: 2rem; margin-bottom: 10px; }
+       .card {
             background: white;
             padding: 25px;
             margin: 20px 0;
             border-radius: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
- .card h2 { color: #1e3a8a; margin-bottom: 15px; font-size: 1.3rem; }
- .number-row {
+       .card h2 { color: #1e3a8a; margin-bottom: 15px; font-size: 1.3rem; }
+       .number-row {
             margin: 15px 0;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 10px;
         }
- .btn {
+       .btn {
             display: inline-block;
             background: #25D366;
             color: white;
@@ -74,9 +85,9 @@
             font-weight: bold;
             font-size: 14px;
         }
- .btn-call { background: #3b82f6; }
- .footer { text-align: center; padding: 20px; color: #666; }
- .hidden { display: none!important; }
+       .btn-call { background: #3b82f6; }
+       .footer { text-align: center; padding: 20px; color: #666; }
+       .hidden { display: none!important; }
         p { margin: 8px 0; }
         @keyframes scroll-left {
           0% { transform: translateX(0); }
@@ -95,7 +106,10 @@
         </div>
 
         <div class="top-bar">
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfxYpfP-nYg12BqgaV7OJVGb5lwmAuBPrfyh1INuVw2c5k8zw/viewform?usp=publish-editor" target="_blank" class="login-btn">👨‍🌾 Kisan Login</a>
+            <div class="left-buttons">
+                <a href="PASTE_KISAN_FORM_LINK_HERE" target="_blank" class="login-btn">👨‍🌾 Kisan Login</a>
+                <a href="PASTE_EMPLOYEE_FORM_LINK_HERE" target="_blank" class="login-btn emp">👷 Karmchari Login</a>
+            </div>
             <button class="lang-switch" onclick="toggleLang()">English</button>
         </div>
 
@@ -134,6 +148,7 @@
                 <p>✓ आधुनिक तकनीक से आलू भंडारण</p>
                 <p>✓ उचित दर पर सुरक्षित भंडारण</p>
                 <p>✓ किसानों के लिए आसान बुकिंग</p>
+                <p>✓ बरदाना और लोन सुविधा उपलब्ध</p>
             </div>
 
             <div class="card">
@@ -155,7 +170,10 @@
         </div>
 
         <div class="top-bar">
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfxYpfP-nYg12BqgaV7OJVGb5lwmAuBPrfyh1INuVw2c5k8zw/viewform?usp=publish-editor" target="_blank" class="login-btn">👨‍🌾 Farmer Login</a>
+            <div class="left-buttons">
+                <a href="PASTE_KISAN_FORM_LINK_HERE" target="_blank" class="login-btn">👨‍🌾 Farmer Login</a>
+                <a href="PASTE_EMPLOYEE_FORM_LINK_HERE" target="_blank" class="login-btn emp">👷 Employee Login</a>
+            </div>
             <button class="lang-switch" onclick="toggleLang()">हिंदी</button>
         </div>
 
@@ -194,6 +212,7 @@
                 <p>✓ Potato Storage with Modern Technology</p>
                 <p>✓ Safe Storage at Reasonable Rates</p>
                 <p>✓ Easy Booking for Farmers</p>
+                <p>✓ Bardana & Loan Facility Available</p>
             </div>
 
             <div class="card">
@@ -224,25 +243,25 @@
 
         const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTg5MuVOg5WRi_8gL-NDJJVKJ2eInyJPsE1rYOoLrftzlIfCwfYkIGK-hjpG-9H3-WJ48s5Iyrxrnnd/pub?output=csv';
 
-        const defaultNoticeHi = 'सभी किसान भाइयों को सूचित किया जाता है कि आलू का नया रेट जानने के लिए कॉल करें: 9838646586';
-        const defaultNoticeEn = 'All farmers are informed to call for latest potato rates: 9838646586';
+        const defaultNoticeHi = 'सभी किसान भाइयों को सूचित किया जाता है कि आलू भंडारण बुकिंग चालू है। बरदाना और लोन के लिए फॉर्म भरें। कॉल: 9838646586';
+        const defaultNoticeEn = 'All farmers are informed that potato storage booking is open. Fill form for Bardana & Loan. Call: 9838646586';
 
         fetch(sheetURL)
- .then(function(res) { return res.text(); })
- .then(function(data) {
-            let notice = data.split('\n')[0].replace(/"/g, '').trim();
-            if(notice && notice.length > 5) {
-              document.getElementById('noticeText').innerHTML = '📢 ' + notice;
-              document.getElementById('noticeTextEn').innerHTML = '📢 ' + notice;
-            } else {
-              document.getElementById('noticeText').innerHTML = '📢 ' + defaultNoticeHi;
-              document.getElementById('noticeTextEn').innerHTML = '📢 ' + defaultNoticeEn;
-            }
-          })
- .catch(function(err) {
-            document.getElementById('noticeText').innerHTML = '📢 ' + defaultNoticeHi;
-            document.getElementById('noticeTextEn').innerHTML = '📢 ' + defaultNoticeEn;
-          });
+           .then(function(res) { return res.text(); })
+           .then(function(data) {
+                let notice = data.split('\n')[0].replace(/"/g, '').trim();
+                if(notice && notice.length > 5) {
+                  document.getElementById('noticeText').innerHTML = '📢 ' + notice;
+                  document.getElementById('noticeTextEn').innerHTML = '📢 ' + notice;
+                } else {
+                  document.getElementById('noticeText').innerHTML = '📢 ' + defaultNoticeHi;
+                  document.getElementById('noticeTextEn').innerHTML = '📢 ' + defaultNoticeEn;
+                }
+            })
+           .catch(function(err) {
+                document.getElementById('noticeText').innerHTML = '📢 ' + defaultNoticeHi;
+                document.getElementById('noticeTextEn').innerHTML = '📢 ' + defaultNoticeEn;
+            });
     </script>
 </body>
 </html>
