@@ -11,7 +11,7 @@
             line-height: 1.6;
             background: #f4f4f4;
         }
-    .top-bar {
+        .top-bar {
             width: 100%;
             background: #1e3a8a;
             padding: 10px 15px;
@@ -22,12 +22,12 @@
             flex-wrap: wrap;
             gap: 8px;
         }
-    .left-buttons {
+        .left-buttons {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
         }
-    .login-btn {
+        .login-btn {
             background: #fbbf24;
             color: #1e3a8a;
             border: none;
@@ -38,11 +38,11 @@
             font-size: 14px;
             text-decoration: none;
         }
-    .login-btn.emp {
+        .login-btn.emp {
             background: #10b981;
             color: white;
         }
-    .lang-switch {
+        .lang-switch {
             background: white;
             color: #1e3a8a;
             border: none;
@@ -52,30 +52,36 @@
             cursor: pointer;
             font-size: 14px;
         }
-    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
-    .header {
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header {
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: white;
             padding: 40px 20px;
             text-align: center;
         }
-    .header h1 { font-size: 2rem; margin-bottom: 10px; }
-    .card {
+        .header h1 { font-size: 2rem; margin-bottom: 10px; }
+        .header .email { font-size: 0.95rem; margin-top: 8px; opacity: 0.95; }
+        .card {
             background: white;
             padding: 25px;
             margin: 20px 0;
             border-radius: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-    .card h2 { color: #1e3a8a; margin-bottom: 15px; font-size: 1.3rem; }
-    .number-row {
+        .card h2 { color: #1e3a8a; margin-bottom: 15px; font-size: 1.3rem; }
+        .number-row {
             margin: 15px 0;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 10px;
         }
-    .btn {
+        .number-row .name { 
+            font-weight: 600; 
+            color: #1e3a8a;
+            min-width: 130px;
+        }
+        .btn {
             display: inline-block;
             background: #25D366;
             color: white;
@@ -85,9 +91,9 @@
             font-weight: bold;
             font-size: 14px;
         }
-    .btn-call { background: #3b82f6; }
-    .footer { text-align: center; padding: 20px; color: #666; }
-    .hidden { display: none!important; }
+        .btn-call { background: #3b82f6; }
+        .footer { text-align: center; padding: 20px; color: #666; }
+        .hidden { display: none!important; }
         p { margin: 8px 0; }
         @keyframes scroll-left {
           0% { transform: translateX(0); }
@@ -102,7 +108,8 @@
     <div id="content-hi">
         <div class="header">
             <h1>❄️ श्री बिहारी जी कोल्ड स्टोरेज</h1>
-            <p>उदैतापुर, मानीमऊ, कन्नौज (U.P.) 209727</p>
+            <p>उदैतापुर, मानीमऊ, कन्नौज (उ. प्र.) 209727</p>
+            <p class="email">📧 Shribiharijicoldstorage@gmail.com</p>
         </div>
 
         <div class="top-bar">
@@ -115,29 +122,32 @@
 
         <div style="background:#b91c1c; color:white; padding:10px 0; margin:0; overflow:hidden; white-space:nowrap;">
           <div id="noticeText" style="display:inline-block; padding-left:100%; animation:scroll-left 30s linear infinite; font-weight:bold; font-size:16px;">
-            📢 नोटिस लोड हो रहा है...
+            📢 सभी किसान भाइयों को अवगत कराना चाहता हूँ कि अपने कोल्ड स्टोरेज में बुकिंग चालू है
           </div>
         </div>
 
         <div class="container">
             <div class="card">
                 <h2>📞 संपर्क करें</h2>
-                <p><strong>पता:</strong> उदैतापुर, मानीमऊ, कन्नौज (U.P.) 209727</p>
+                <p><strong>पता:</strong> उदैतापुर, मानीमऊ, कन्नौज (उ. प्र.) 209727</p>
 
                 <div class="number-row">
                     <span><strong>📱 9838646586</strong></span>
+                    <span class="name">Raju Dubey</span>
                     <a href="tel:9838646586" class="btn btn-call">कॉल करें</a>
                     <a href="https://wa.me/919838646586?text=नमस्ते,%20मुझे%20आलू%20स्टोर%20करना%20है" class="btn">WhatsApp</a>
                 </div>
 
                 <div class="number-row">
                     <span><strong>📱 9621996103</strong></span>
+                    <span class="name">Pranshu Dubey</span>
                     <a href="tel:9621996103" class="btn btn-call">कॉल करें</a>
                     <a href="https://wa.me/919621996103?text=नमस्ते,%20मुझे%20आलू%20स्टोर%20करना%20है" class="btn">WhatsApp</a>
                 </div>
 
                 <div class="number-row">
                     <span><strong>📱 7007490379</strong></span>
+                    <span class="name">Himanshu Dubey</span>
                     <a href="tel:7007490379" class="btn btn-call">कॉल करें</a>
                     <a href="https://wa.me/917007490379?text=नमस्ते,%20मुझे%20आलू%20स्टोर%20करना%20है" class="btn">WhatsApp</a>
                 </div>
@@ -150,16 +160,10 @@
                 <p>✓ किसानों के लिए आसान बुकिंग</p>
                 <p>✓ बारदाना और लोन सुविधा उपलब्ध</p>
             </div>
-
-            <div class="card">
-                <h2>💰 रेट</h2>
-                <p>सीजन के हिसाब से रेट बदलते रहते हैं।</p>
-                <p><strong>कृपया कॉल या WhatsApp करके ताज़ा रेट पता करें।</strong></p>
-            </div>
         </div>
 
         <div class="footer">
-            <p>© 2026 श्री बिहारी जी कोल्ड स्टोरेज | सभी अधिकार सुरक्षित</p>
+            <p>© 2025 श्री बिहारी जी कोल्ड स्टोरेज | सभी अधिकार सुरक्षित</p>
         </div>
     </div>
 
@@ -167,6 +171,7 @@
         <div class="header">
             <h1>❄️ Shri Bihari Ji Cold Storage</h1>
             <p>Udaitapur, Manimau, Kannauj (U.P.) 209727</p>
+            <p class="email">📧 Shribiharijicoldstorage@gmail.com</p>
         </div>
 
         <div class="top-bar">
@@ -174,12 +179,12 @@
                 <a href="https://docs.google.com/forms/d/1f_fYcrL3te4zpAWYnylZW5Gei8BHbDGr9uDTy_hkZvM/viewform" target="_blank" class="login-btn">👨‍🌾 Farmer Portal</a>
                 <a href="https://formfacade.com/public/113767906961123195896/all/form/1FAIpQLSdiU635du7Cd_1HAdML8SnTrAlNd0FOCwGTq1RZOdDs2mGYLg" target="_blank" class="login-btn emp">👷 Employee Portal</a>
             </div>
-            <button class="lang-switch" onclick="toggleLang()">हिंदी</button>
+            <button class="lang-switch" onclick="toggleLang()">हिन्दी</button>
         </div>
 
         <div style="background:#b91c1c; color:white; padding:10px 0; margin:0; overflow:hidden; white-space:nowrap;">
           <div id="noticeTextEn" style="display:inline-block; padding-left:100%; animation:scroll-left 30s linear infinite; font-weight:bold; font-size:16px;">
-            📢 Loading notice...
+            📢 All farmer brothers are informed that booking is open in our cold storage
           </div>
         </div>
 
@@ -190,78 +195,45 @@
 
                 <div class="number-row">
                     <span><strong>📱 9838646586</strong></span>
-                    <a href="tel:9838646586" class="btn btn-call">Call</a>
+                    <span class="name">Raju Dubey</span>
+                    <a href="tel:9838646586" class="btn btn-call">Call Now</a>
                     <a href="https://wa.me/919838646586?text=Hello,%20I%20want%20to%20store%20potatoes" class="btn">WhatsApp</a>
                 </div>
 
                 <div class="number-row">
                     <span><strong>📱 9621996103</strong></span>
-                    <a href="tel:9621996103" class="btn btn-call">Call</a>
+                    <span class="name">Pranshu Dubey</span>
+                    <a href="tel:9621996103" class="btn btn-call">Call Now</a>
                     <a href="https://wa.me/919621996103?text=Hello,%20I%20want%20to%20store%20potatoes" class="btn">WhatsApp</a>
                 </div>
 
                 <div class="number-row">
                     <span><strong>📱 7007490379</strong></span>
-                    <a href="tel:7007490379" class="btn btn-call">Call</a>
+                    <span class="name">Himanshu Dubey</span>
+                    <a href="tel:7007490379" class="btn btn-call">Call Now</a>
                     <a href="https://wa.me/917007490379?text=Hello,%20I%20want%20to%20store%20potatoes" class="btn">WhatsApp</a>
                 </div>
             </div>
 
             <div class="card">
                 <h2>🥔 Our Services</h2>
-                <p>✓ Potato Storage with Modern Technology</p>
-                <p>✓ Safe Storage at Reasonable Rates</p>
-                <p>✓ Easy Booking for Farmers</p>
-                <p>✓ Bardana & Loan Facility Available</p>
-            </div>
-
-            <div class="card">
-                <h2>💰 Rates</h2>
-                <p>Rates change as per season.</p>
-                <p><strong>Please Call or WhatsApp for latest rates.</strong></p>
+                <p>✓ Modern technology for potato storage</p>
+                <p>✓ Safe storage at reasonable rates</p>
+                <p>✓ Easy booking for farmers</p>
+                <p>✓ Bardana and loan facility available</p>
             </div>
         </div>
 
         <div class="footer">
-            <p>© 2026 Shri Bihari Ji Cold Storage | All Rights Reserved</p>
+            <p>© 2025 Shri Bihari Ji Cold Storage | All Rights Reserved</p>
         </div>
     </div>
 
     <script>
-        let isHindi = true;
         function toggleLang() {
-            isHindi =!isHindi;
             document.getElementById('content-hi').classList.toggle('hidden');
             document.getElementById('content-en').classList.toggle('hidden');
-
-            document.querySelectorAll('.lang-switch').forEach(function(btn) {
-                btn.textContent = isHindi? 'English' : 'हिंदी';
-            });
-
-            document.documentElement.lang = isHindi? 'hi' : 'en';
         }
-
-        const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTg5MuVOg5WRi_8gL-NDJJVKJ2eInyJPsE1rYOoLrftzlIfCwfYkIGK-hjpG-9H3-WJ48s5Iyrxrnnd/pub?output=csv';
-
-        const defaultNoticeHi = 'सभी किसान भाइयों को सूचित किया जाता है कि आलू भंडारण बुकिंग चालू है। बरदाना और लोन के लिए फॉर्म भरें। कॉल: 9838646586';
-        const defaultNoticeEn = 'All farmers are informed that potato storage booking is open. Fill form for Bardana & Loan. Call: 9838646586';
-
-        fetch(sheetURL)
-    .then(function(res) { return res.text(); })
-    .then(function(data) {
-                let notice = data.split('\n')[0].replace(/"/g, '').trim();
-                if(notice && notice.length > 5) {
-                  document.getElementById('noticeText').innerHTML = '📢 ' + notice;
-                  document.getElementById('noticeTextEn').innerHTML = '📢 ' + notice;
-                } else {
-                  document.getElementById('noticeText').innerHTML = '📢 ' + defaultNoticeHi;
-                  document.getElementById('noticeTextEn').innerHTML = '📢 ' + defaultNoticeEn;
-                }
-            })
-    .catch(function(err) {
-                document.getElementById('noticeText').innerHTML = '📢 ' + defaultNoticeHi;
-                document.getElementById('noticeTextEn').innerHTML = '📢 ' + defaultNoticeEn;
-            });
     </script>
 </body>
 </html>
