@@ -11,7 +11,7 @@
             line-height: 1.6;
             background: #f4f4f4;
         }
-     .top-bar {
+    .top-bar {
             width: 100%;
             background: #1e3a8a;
             padding: 10px 15px;
@@ -22,12 +22,12 @@
             flex-wrap: wrap;
             gap: 8px;
         }
-     .left-buttons {
+    .left-buttons {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
         }
-     .login-btn {
+    .login-btn {
             background: #fbbf24;
             color: #1e3a8a;
             border: none;
@@ -38,11 +38,11 @@
             font-size: 14px;
             text-decoration: none;
         }
-     .login-btn.emp {
+    .login-btn.emp {
             background: #10b981;
             color: white;
         }
-     .lang-switch {
+    .lang-switch {
             background: white;
             color: #1e3a8a;
             border: none;
@@ -52,30 +52,30 @@
             cursor: pointer;
             font-size: 14px;
         }
-     .container { max-width: 900px; margin: 0 auto; padding: 20px; }
-     .header {
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+    .header {
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: white;
             padding: 40px 20px;
             text-align: center;
         }
-     .header h1 { font-size: 2rem; margin-bottom: 10px; }
-     .card {
+    .header h1 { font-size: 2rem; margin-bottom: 10px; }
+    .card {
             background: white;
             padding: 25px;
             margin: 20px 0;
             border-radius: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-     .card h2 { color: #1e3a8a; margin-bottom: 15px; font-size: 1.3rem; }
-     .number-row {
+    .card h2 { color: #1e3a8a; margin-bottom: 15px; font-size: 1.3rem; }
+    .number-row {
             margin: 15px 0;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 10px;
         }
-     .btn {
+    .btn {
             display: inline-block;
             background: #25D366;
             color: white;
@@ -85,9 +85,9 @@
             font-weight: bold;
             font-size: 14px;
         }
-     .btn-call { background: #3b82f6; }
-     .footer { text-align: center; padding: 20px; color: #666; }
-     .hidden { display: none!important; }
+    .btn-call { background: #3b82f6; }
+    .footer { text-align: center; padding: 20px; color: #666; }
+    .hidden { display: none!important; }
         p { margin: 8px 0; }
         @keyframes scroll-left {
           0% { transform: translateX(0); }
@@ -107,8 +107,8 @@
 
         <div class="top-bar">
             <div class="left-buttons">
-                <a href="https://docs.google.com/forms/d/1f_fYcrL3te4zpAWYnylZW5Gei8BHbDGr9uDTy_hkZvM/viewform" target="_blank" class="login-btn">👨‍🌾 Kisan Login</a>
-                <a href="https://formfacade.com/public/113767906961123195896/all/form/1FAIpQLSdiU635du7Cd_1HAdML8SnTrAlNd0FOCwGTq1RZOdDs2mGYLg" target="_blank" class="login-btn emp">👷 Karmchari Login</a>
+                <a href="https://docs.google.com/forms/d/1f_fYcrL3te4zpAWYnylZW5Gei8BHbDGr9uDTy_hkZvM/viewform" target="_blank" class="login-btn">👨‍🌾 किसान पोर्टल</a>
+                <a href="https://formfacade.com/public/113767906961123195896/all/form/1FAIpQLSdiU635du7Cd_1HAdML8SnTrAlNd0FOCwGTq1RZOdDs2mGYLg" target="_blank" class="login-btn emp">👷 कर्मचारी पोर्टल</a>
             </div>
             <button class="lang-switch" onclick="toggleLang()">English</button>
         </div>
@@ -171,8 +171,8 @@
 
         <div class="top-bar">
             <div class="left-buttons">
-                <a href="https://docs.google.com/forms/d/1f_fYcrL3te4zpAWYnylZW5Gei8BHbDGr9uDTy_hkZvM/viewform" target="_blank" class="login-btn">👨‍🌾 Farmer Login</a>
-                <a href="https://formfacade.com/public/113767906961123195896/all/form/1FAIpQLSdiU635du7Cd_1HAdML8SnTrAlNd0FOCwGTq1RZOdDs2mGYLg" target="_blank" class="login-btn emp">👷 Employee Login</a>
+                <a href="https://docs.google.com/forms/d/1f_fYcrL3te4zpAWYnylZW5Gei8BHbDGr9uDTy_hkZvM/viewform" target="_blank" class="login-btn">👨‍🌾 Farmer Portal</a>
+                <a href="https://formfacade.com/public/113767906961123195896/all/form/1FAIpQLSdiU635du7Cd_1HAdML8SnTrAlNd0FOCwGTq1RZOdDs2mGYLg" target="_blank" class="login-btn emp">👷 Employee Portal</a>
             </div>
             <button class="lang-switch" onclick="toggleLang()">हिंदी</button>
         </div>
@@ -247,8 +247,8 @@
         const defaultNoticeEn = 'All farmers are informed that potato storage booking is open. Fill form for Bardana & Loan. Call: 9838646586';
 
         fetch(sheetURL)
-     .then(function(res) { return res.text(); })
-     .then(function(data) {
+    .then(function(res) { return res.text(); })
+    .then(function(data) {
                 let notice = data.split('\n')[0].replace(/"/g, '').trim();
                 if(notice && notice.length > 5) {
                   document.getElementById('noticeText').innerHTML = '📢 ' + notice;
@@ -258,7 +258,7 @@
                   document.getElementById('noticeTextEn').innerHTML = '📢 ' + defaultNoticeEn;
                 }
             })
-     .catch(function(err) {
+    .catch(function(err) {
                 document.getElementById('noticeText').innerHTML = '📢 ' + defaultNoticeHi;
                 document.getElementById('noticeTextEn').innerHTML = '📢 ' + defaultNoticeEn;
             });
