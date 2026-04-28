@@ -60,6 +60,7 @@
             text-align: center;
         }
     .header h1 { font-size: 2rem; margin-bottom: 10px; }
+    .header .email { font-size: 0.95rem; margin-top: 8px; opacity: 0.95; }
     .card {
             background: white;
             padding: 25px;
@@ -74,6 +75,11 @@
             flex-wrap: wrap;
             align-items: center;
             gap: 10px;
+        }
+    .number-row .name { 
+            font-weight: 600; 
+            color: #1e3a8a;
+            min-width: 130px;
         }
     .btn {
             display: inline-block;
@@ -102,7 +108,8 @@
     <div id="content-hi">
         <div class="header">
             <h1>❄️ श्री बिहारी जी कोल्ड स्टोरेज</h1>
-            <p>उदैतापुर, मानीमऊ, कन्नौज (U.P.) 209727</p>
+            <p>उदैतापुर, मानीमऊ, कन्नौज (उ. प्र.) 209727</p>
+            <p class="email">📧 Shribiharijicoldstorage@gmail.com</p>
         </div>
 
         <div class="top-bar">
@@ -122,22 +129,25 @@
         <div class="container">
             <div class="card">
                 <h2>📞 संपर्क करें</h2>
-                <p><strong>पता:</strong> उदैतापुर, मानीमऊ, कन्नौज (U.P.) 209727</p>
+                <p><strong>पता:</strong> उदैतापुर, मानीमऊ, कन्नौज (उ. प्र.) 209727</p>
 
                 <div class="number-row">
                     <span><strong>📱 9838646586</strong></span>
+                    <span class="name">Raju Dubey</span>
                     <a href="tel:9838646586" class="btn btn-call">कॉल करें</a>
                     <a href="https://wa.me/919838646586?text=नमस्ते,%20मुझे%20आलू%20स्टोर%20करना%20है" class="btn">WhatsApp</a>
                 </div>
 
                 <div class="number-row">
                     <span><strong>📱 9621996103</strong></span>
+                    <span class="name">Pranshu Dubey</span>
                     <a href="tel:9621996103" class="btn btn-call">कॉल करें</a>
                     <a href="https://wa.me/919621996103?text=नमस्ते,%20मुझे%20आलू%20स्टोर%20करना%20है" class="btn">WhatsApp</a>
                 </div>
 
                 <div class="number-row">
                     <span><strong>📱 7007490379</strong></span>
+                    <span class="name">Himanshu Dubey</span>
                     <a href="tel:7007490379" class="btn btn-call">कॉल करें</a>
                     <a href="https://wa.me/917007490379?text=नमस्ते,%20मुझे%20आलू%20स्टोर%20करना%20है" class="btn">WhatsApp</a>
                 </div>
@@ -167,6 +177,7 @@
         <div class="header">
             <h1>❄️ Shri Bihari Ji Cold Storage</h1>
             <p>Udaitapur, Manimau, Kannauj (U.P.) 209727</p>
+            <p class="email">📧 Shribiharijicoldstorage@gmail.com</p>
         </div>
 
         <div class="top-bar">
@@ -178,90 +189,4 @@
         </div>
 
         <div style="background:#b91c1c; color:white; padding:10px 0; margin:0; overflow:hidden; white-space:nowrap;">
-          <div id="noticeTextEn" style="display:inline-block; padding-left:100%; animation:scroll-left 30s linear infinite; font-weight:bold; font-size:16px;">
-            📢 Loading notice...
-          </div>
-        </div>
-
-        <div class="container">
-            <div class="card">
-                <h2>📞 Contact Us</h2>
-                <p><strong>Address:</strong> Udaitapur, Manimau, Kannauj (U.P.) 209727</p>
-
-                <div class="number-row">
-                    <span><strong>📱 9838646586</strong></span>
-                    <a href="tel:9838646586" class="btn btn-call">Call</a>
-                    <a href="https://wa.me/919838646586?text=Hello,%20I%20want%20to%20store%20potatoes" class="btn">WhatsApp</a>
-                </div>
-
-                <div class="number-row">
-                    <span><strong>📱 9621996103</strong></span>
-                    <a href="tel:9621996103" class="btn btn-call">Call</a>
-                    <a href="https://wa.me/919621996103?text=Hello,%20I%20want%20to%20store%20potatoes" class="btn">WhatsApp</a>
-                </div>
-
-                <div class="number-row">
-                    <span><strong>📱 7007490379</strong></span>
-                    <a href="tel:7007490379" class="btn btn-call">Call</a>
-                    <a href="https://wa.me/917007490379?text=Hello,%20I%20want%20to%20store%20potatoes" class="btn">WhatsApp</a>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>🥔 Our Services</h2>
-                <p>✓ Potato Storage with Modern Technology</p>
-                <p>✓ Safe Storage at Reasonable Rates</p>
-                <p>✓ Easy Booking for Farmers</p>
-                <p>✓ Bardana & Loan Facility Available</p>
-            </div>
-
-            <div class="card">
-                <h2>💰 Rates</h2>
-                <p>Rates change as per season.</p>
-                <p><strong>Please Call or WhatsApp for latest rates.</strong></p>
-            </div>
-        </div>
-
-        <div class="footer">
-            <p>© 2026 Shri Bihari Ji Cold Storage | All Rights Reserved</p>
-        </div>
-    </div>
-
-    <script>
-        let isHindi = true;
-        function toggleLang() {
-            isHindi =!isHindi;
-            document.getElementById('content-hi').classList.toggle('hidden');
-            document.getElementById('content-en').classList.toggle('hidden');
-
-            document.querySelectorAll('.lang-switch').forEach(function(btn) {
-                btn.textContent = isHindi? 'English' : 'हिंदी';
-            });
-
-            document.documentElement.lang = isHindi? 'hi' : 'en';
-        }
-
-        const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTg5MuVOg5WRi_8gL-NDJJVKJ2eInyJPsE1rYOoLrftzlIfCwfYkIGK-hjpG-9H3-WJ48s5Iyrxrnnd/pub?output=csv';
-
-        const defaultNoticeHi = 'सभी किसान भाइयों को सूचित किया जाता है कि आलू भंडारण बुकिंग चालू है। बरदाना और लोन के लिए फॉर्म भरें। कॉल: 9838646586';
-        const defaultNoticeEn = 'All farmers are informed that potato storage booking is open. Fill form for Bardana & Loan. Call: 9838646586';
-
-        fetch(sheetURL)
-    .then(function(res) { return res.text(); })
-    .then(function(data) {
-                let notice = data.split('\n')[0].replace(/"/g, '').trim();
-                if(notice && notice.length > 5) {
-                  document.getElementById('noticeText').innerHTML = '📢 ' + notice;
-                  document.getElementById('noticeTextEn').innerHTML = '📢 ' + notice;
-                } else {
-                  document.getElementById('noticeText').innerHTML = '📢 ' + defaultNoticeHi;
-                  document.getElementById('noticeTextEn').innerHTML = '📢 ' + defaultNoticeEn;
-                }
-            })
-    .catch(function(err) {
-                document.getElementById('noticeText').innerHTML = '📢 ' + defaultNoticeHi;
-                document.getElementById('noticeTextEn').innerHTML = '📢 ' + defaultNoticeEn;
-            });
-    </script>
-</body>
-</html>
+          <div id="noticeTextEn" style="display:inline-block; padding-left:100%; animation:scroll-left 30s linear infinite; font-weight:bold; font-size:16
