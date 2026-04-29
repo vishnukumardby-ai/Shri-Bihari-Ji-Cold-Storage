@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>किसान डैशबोर्ड - श्री बिहारी जी कोल्ड स्टोरेज</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f3f4f6; padding: 15px; }
+        .header { background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .card h3 { color: #1e3a8a; margin-bottom: 15px; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; }
+        .row { display: flex; justify-content: space-between; margin: 12px 0; font-size: 16px; }
+        .label { color: #666; }
+        .value { font-weight: bold; color: #1e3a8a; }
+        .balance { font-size: 32px; text-align: center; color: #dc2626; margin: 20px 0; }
+        .logout { background: #dc2626; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-size: 16px; cursor: pointer; margin-top: 20px; }
+        .loading { text-align: center; padding: 40px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>❄️ श्री बिहारी जी कोल्ड स्टोरेज</h2>
+        <p id="userPhone">लोड हो रहा है...</p>
+    </div>
+    <div id="loading" class="card loading">डाटा लोड हो रहा है...</div>
+    <div id="dashboard" style="display:none;">
+        <div class="card">
+            <h3>💰 कुल बकाया</h3>
+            <div class="balance" id="totalBalance">₹0</div>
+        </div>
+        <div class="card">
+            <h3>📦 स्टॉक का हिसाब</h3>
+            <div class="row">
+                <span class="label">कुल जमा बोरियां:</span>
+                <span class="value" id="totalBags">0 बोरी</span>
+            </div>
+            <div class="row">
+                <span class="label">निकाली गई बोरियां:</span>
+                <span class="value" id="withdrawnBags">0 बोरी</span>
+            </div>
+            <div class="row">
+                <span class="label">बची हुई बोरियां:</span>
+                <span class="value" id="remainingBags">0 बोरी</span>
+            </div>
+        </div>
+        <div class="card">
+            <h3>🧾 लेन-देन का हिसाब</h3>
+            <div class="row">
+                <span class="label">कुल जमा राशि:</span>
+                <span class="value" id="totalPaid">₹0</span>
+            </div>
+            <div class="row">
+                <span class="label">कुल बिल:</span>
+                <span class="value" id="totalBill">₹0</span>
+            </div>
+        </div>
+        <button class="logout" onclick="logout()">लॉगआउट करें</button>
+    </div>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        const firebaseConfig = {
+            apiKey: "AIzaSyABEY-NJR6s6gFKcOauqaTTrWb8CJDW3s",
+            authDomain: "shri-bihari-ji-cold-storage.firebaseapp.com",
+            projectId: "shri-bihari-ji-cold-storage",
+            storageBucket: "shri-bihari-ji-cold-storage.firebasestorage.app",
+            messagingSenderId: "244015012898",
+            appId: "1:244015012898:web:87c769ed6f94835244fe7b"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                document.getElementById('userPhone').innerText = user.phoneNumber;
+                const phone = user.phoneNumber;
+                const docRef = doc(db, "farmers", phone);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('totalBalance').innerText = '₹' + (data.balance || 0);
+                    document.getElementById('totalBags').innerText = (data.totalBags || 0) + ' बोरी';
+                    document.getElementById('withdrawnBags').innerText = (data.withdrawnBags || 0) + ' बोरी';
+                    document.getElementById('remainingBags').innerText = (data.remainingBags || 0) + ' बोरी';
+                    document.getElementById('totalPaid').innerText = '₹' + (data.totalPaid || 0);
+                    document.getElementById('totalBill').innerText = '₹' + (data.totalBill || 0);
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                } else {
+                    document.getElementById('loading').innerHTML = '<p>आपका डाटा अभी अपडेट नहीं हुआ है।<br>कृपया कोल्ड स्टोरेज से संपर्क करें।</p>';
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+        window.logout = function() {
+            signOut(auth).then(() => { window.location.href = 'login.html'; });
+        }
+    </script>
+</body>
+</html>
