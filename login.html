@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>किसान लॉगिन - श्री बिहारी जी कोल्ड स्टोरेज</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #1e3a8a, #3b82f6); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-box { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 100%; max-width: 400px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { color: #1e3a8a; font-size: 24px; margin-bottom: 5px; }
+        input { width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; margin: 10px 0; }
+        button { width: 100%; background: #dc2626; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #b91c1c; }
+        button:disabled { background: #999; }
+        #recaptcha-container { margin: 15px 0; }
+        .error { color: #dc2626; text-align: center; margin-top: 10px; font-size: 14px; }
+        .success { color: #10b981; text-align: center; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <div class="header">
+            <h1>❄️ किसान लॉगिन</h1>
+            <p>श्री बिहारी जी कोल्ड स्टोरेज</p>
+        </div>
+        <div id="login-div">
+            <input type="tel" id="phoneNumber" placeholder="+91 मोबाइल नंबर डालें" value="+91">
+            <div id="recaptcha-container"></div>
+            <button id="sendOtpBtn" onclick="sendOTP()">OTP भेजें</button>
+        </div>
+        <div id="otp-div" style="display:none;">
+            <input type="number" id="otp" placeholder="6 अंकों का OTP डालें">
+            <button id="verifyOtpBtn" onclick="verifyOTP()">लॉगिन करें</button>
+        </div>
+        <div id="message"></div>
+    </div>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        const firebaseConfig = {
+            apiKey: "AIzaSyABEY-NJR6s6gFKcOauqaTTrWb8CJDW3s",
+            authDomain: "shri-bihari-ji-cold-storage.firebaseapp.com",
+            projectId: "shri-bihari-ji-cold-storage",
+            storageBucket: "shri-bihari-ji-cold-storage.firebasestorage.app",
+            messagingSenderId: "244015012898",
+            appId: "1:244015012898:web:87c769ed6f94835244fe7b"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        auth.languageCode = 'hi';
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, '
