@@ -24,4 +24,135 @@
     </style>
 </head>
 <body>
-   
+    <div class="box">
+        <h2>📍 हाज़िरी IN/OUT</h2>
+        <div class="info">100 मीटर के अंदर ही हाज़िरी लगेगी</div>
+        
+        <label>अपना नाम <span class="required">*</span></label>
+        <select id="empName">
+            <option value="">नाम चुनें</option>
+            <option>महेश चन्द्र मिश्रा</option>
+            <option>विष्णु कुमार दुबे</option>
+            <option>सौरभ दुबे</option>
+            <option>सुमित दुबे</option>
+            <option>अनुज कुमार दुबे</option>
+            <option>सुनीत शर्मा</option>
+            <option>गोपाल ठाकुर</option>
+            <option>गुरदीप</option>
+        </select>
+        
+        <label>आज क्या काम कर रहे हैं? <span class="required">*</span></label>
+        <textarea id="work" placeholder=""></textarea>
+        
+        <div class="btn-group">
+            <button class="btn-in" id="inBtn" onclick="checkLocation('IN')">✅ IN - आया</button>
+            <button class="btn-out" id="outBtn" onclick="checkLocation('OUT')">❌ OUT - गया</button>
+        </div>
+        <div id="status"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyABEY-NJR6s6gFKcOauqaTTrWb8CJDW3s",
+            authDomain: "shri-bihari-ji-cold-storage.firebaseapp.com",
+            projectId: "shri-bihari-ji-cold-storage",
+            storageBucket: "shri-bihari-ji-cold-storage.firebasestorage.app",
+            messagingSenderId: "244015012898",
+            appId: "1:244015012898:web:87c769ed6f94835244fe7b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const OFFICE_LAT = 26.982963; 
+        const OFFICE_LNG = 79.954365;
+        const ALLOWED_DISTANCE = 100;
+
+        const statusDiv = document.getElementById('status');
+        const inBtn = document.getElementById('inBtn');
+        const outBtn = document.getElementById('outBtn');
+        let currentType = '';
+
+        window.checkLocation = function(type) {
+            currentType = type;
+            const name = document.getElementById('empName').value.trim();
+            const work = document.getElementById('work').value.trim();
+            
+            if(!name) {
+                showMsg('❌ पहले अपना नाम चुनें', 'error');
+                return;
+            }
+            if(!work) {
+                showMsg('❌ "आज क्या काम कर रहे हैं?" लिखना जरूरी है', 'error');
+                return;
+            }
+
+            inBtn.disabled = true;
+            outBtn.disabled = true;
+            showMsg('Location चेक हो रही है...', 'info');
+
+            navigator.geolocation.getCurrentPosition(success, error, {
+                enableHighAccuracy: true, timeout: 10000, maximumAge: 0
+            });
+        }
+
+        function success(position) {
+            const distance = getDistance(OFFICE_LAT, OFFICE_LNG, position.coords.latitude, position.coords.longitude);
+            if (distance <= ALLOWED_DISTANCE) {
+                markAttendance(distance);
+            } else {
+                showMsg(`❌ आप ${Math.round(distance)}m दूर हैं। 100m के अंदर आएं`, 'error');
+                enableButtons();
+            }
+        }
+
+        function error(err) {
+            showMsg('Location Error: GPS ऑन करें और Permission दें', 'error');
+            enableButtons();
+        }
+
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3;
+            const φ1 = lat1 * Math.PI/180; const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180; const Δλ = (lon2-lon1) * Math.PI/180;
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        }
+
+        async function markAttendance(distance) {
+            const name = document.getElementById('empName').value.trim();
+            const work = document.getElementById('work').value.trim();
+            
+            try {
+                await addDoc(collection(db, "attendance"), {
+                    name: name,
+                    type: currentType,
+                    work: work,
+                    distance: Math.round(distance),
+                    timestamp: new Date(),
+                    date: new Date().toLocaleDateString('hi-IN'),
+                    time: new Date().toLocaleTimeString('hi-IN')
+                });
+                showMsg(`✅ ${currentType} हाज़िरी लग गई! ${Math.round(distance)}m दूर`, 'success');
+                document.getElementById('work').value = '';
+            } catch (err) {
+                showMsg('Error: ' + err.message, 'error');
+            }
+            enableButtons();
+        }
+
+        function enableButtons() {
+            inBtn.disabled = false;
+            outBtn.disabled = false;
+        }
+
+        function showMsg(text, type) {
+            statusDiv.className = 'msg ' + type;
+            statusDiv.innerText = text;
+        }
+    </script>
+</body>
+</html>
