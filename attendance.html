@@ -42,7 +42,7 @@
         </select>
         
         <label>आज क्या काम कर रहे हैं? <span class="required">*</span></label>
-        <textarea id="work" placeholder=""></textarea>
+        <textarea id="work" placeholder="Duty लिख दे"></textarea>
         
         <div class="btn-group">
             <button class="btn-in" id="inBtn" onclick="checkLocation('IN')">✅ IN - आया</button>
@@ -52,7 +52,6 @@
     </div>
 
     <script>
-        // YAHAN APNA APPS SCRIPT URL DALNA HAI
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzhMg5FLlyOIPxlqcZiN_a9DcFrIUYg6q510wlS7hLHS4ZuDGuXfp3NnQt75yaQdkinoA/exec';
 
         const OFFICE_LAT = 26.982963; 
@@ -64,11 +63,11 @@
         const outBtn = document.getElementById('outBtn');
         let currentType = '';
 
-        // Device ID Generate - 1 Mobile = 1 ID
-        let deviceId = localStorage.getItem('deviceId');
-        if(!deviceId){
-          deviceId = 'D' + Date.now() + Math.random().toString(36).substr(2,5);
-          localStorage.setItem('deviceId', deviceId);
+        // Device ID Fix - Apps Script में device_id चाहिए
+        let device_id = localStorage.getItem('device_id');
+        if(!device_id){
+          device_id = 'D' + Date.now() + Math.random().toString(36).substr(2,5);
+          localStorage.setItem('device_id', device_id);
         }
 
         window.checkLocation = function(type) {
@@ -119,4 +118,45 @@
 
         async function markAttendance(distance, lat, lng) {
             const name = document.getElementById('empName').value.trim();
-            const work = document.getElementById
+            const work = document.getElementById('work').value.trim();
+            
+            const data = {
+                name: name,
+                type: currentType,
+                work: work,
+                lat: lat,
+                lng: lng,
+                device_id: device_id
+            };
+            
+            showMsg('⏳ हाज़िरी भेज रहे हैं...', 'info');
+            
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {'Content-Type': 'text/plain'},
+                    body: JSON.stringify(data)
+                });
+                
+                showMsg(`✅ ${currentType} हाज़िरी भेज दी! Sheet Check करो`, 'success');
+                document.getElementById('work').value = '';
+                
+            } catch (err) {
+                showMsg('❌ Error: Sheet से Connect नहीं हुआ', 'error');
+            }
+            enableButtons();
+        }
+
+        function enableButtons() {
+            inBtn.disabled = false;
+            outBtn.disabled = false;
+        }
+
+        function showMsg(text, type) {
+            statusDiv.className = 'msg ' + type;
+            statusDiv.innerText = text;
+        }
+    </script>
+</body>
+</html>
