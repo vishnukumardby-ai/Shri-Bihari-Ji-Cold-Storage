@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - श्री बिहारी जी कोल्ड स्टोरेज</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f3f4f6; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { color: #1e3a8a; text-align: center; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; color: #333; font-weight: bold; margin-bottom: 5px; }
+        input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; }
+        button { width: 100%; background: #dc2626; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #b91c1c; }
+        .success { background: #10b981; color: white; padding: 15px; border-radius: 10px; text-align: center; margin-top: 15px; display: none; }
+        .error { background: #dc2626; color: white; padding: 15px; border-radius: 10px; text-align: center; margin-top: 15px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>❄️ किसान डाटा अपडेट करें</h2>
+        <div class="form-group">
+            <label>किसान का मोबाइल नंबर (+91 सहित):</label>
+            <input type="tel" id="phone" placeholder="+919876543210" value="+91">
+        </div>
+        <div class="form-group">
+            <label>कुल जमा बोरियां:</label>
+            <input type="number" id="totalBags" placeholder="100">
+        </div>
+        <div class="form-group">
+            <label>निकाली गई बोरियां:</label>
+            <input type="number" id="withdrawnBags" placeholder="20">
+        </div>
+        <div class="form-group">
+            <label>कुल बिल राशि (₹):</label>
+            <input type="number" id="totalBill" placeholder="5000">
+        </div>
+        <div class="form-group">
+            <label>कुल जमा राशि (₹):</label>
+            <input type="number" id="totalPaid" placeholder="3000">
+        </div>
+        <button onclick="saveData()">डाटा सेव करें</button>
+        <div id="successMsg" class="success">डाटा सेव हो गया ✅</div>
+        <div id="errorMsg" class="error">Error: कुछ गलत हुआ</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyABEY-NJR6s6gFKcOauqaTTrWb8CJDW3s",
+            authDomain: "shri-bihari-ji-cold-storage.firebaseapp.com",
+            projectId: "shri-bihari-ji-cold-storage",
+            storageBucket: "shri-bihari-ji-cold-storage.firebasestorage.app",
+            messagingSenderId: "244015012898",
+            appId: "1:244015012898:web:87c769ed6f94835244fe7b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.saveData = async function() {
+            const phone = document.getElementById('phone').value;
+            const totalBags = parseInt(document.getElementById('totalBags').value) || 0;
+            const withdrawnBags = parseInt(document.getElementById('withdrawnBags').value) || 0;
+            const totalBill = parseInt(document.getElementById('totalBill').value) || 0;
+            const totalPaid = parseInt(document.getElementById('totalPaid').value) || 0;
+            
+            const remainingBags = totalBags - withdrawnBags;
+            const balance = totalBill - totalPaid;
+
+            if(phone.length !== 13) {
+                document.getElementById('errorMsg').innerText = '+91 के साथ 10 अंक का नंबर डालें';
+                document.getElementById('errorMsg').style.display = 'block';
+                setTimeout(() => { document.getElementById('errorMsg').style.display = 'none'; }, 3000);
+                return;
+            }
+
+            try {
+                await setDoc(doc(db, "farmers", phone), {
+                    phone: phone,
+                    totalBags: totalBags,
+                    withdrawnBags: withdrawnBags,
+                    remainingBags: remainingBags,
+                    totalBill: totalBill,
+                    totalPaid: totalPaid,
+                    balance: balance,
+                    lastUpdated: new Date()
+                });
+                
+                document.getElementById('successMsg').style.display = 'block';
+                setTimeout(() => { 
+                    document.getElementById('successMsg').style.display = 'none';
+                    document.getElementById('phone').value = '+91';
+                    document.getElementById('totalBags').value = '';
+                    document.getElementById('withdrawnBags').value = '';
+                    document.getElementById('totalBill').value = '';
+                    document.getElementById('totalPaid').value = '';
+                }, 2000);
+            } catch (error) {
+                document.getElementById('errorMsg').innerText = 'Error: ' + error.message;
+                document.getElementById('errorMsg').style.display = 'block';
+                setTimeout(() => { document.getElementById('errorMsg').style.display = 'none'; }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>
