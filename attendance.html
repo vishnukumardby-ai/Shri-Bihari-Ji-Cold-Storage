@@ -26,7 +26,7 @@
 <body>
     <div class="box">
         <h2>📍 हाज़िरी IN/OUT</h2>
-        <div class="info">100 मीटर के अंदर ही हाज़िरी लगेगी</div>
+        <div class="info">100 मीटर के अंदर ही हाज़िरी लगेगी | 1 Mobile = 2 हाज़िरी/दिन</div>
         
         <label>अपना नाम <span class="required">*</span></label>
         <select id="empName">
@@ -51,21 +51,9 @@
         <div id="status"></div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyABEY-NJR6s6gFKcOauqaTTrWb8CJDW3s",
-            authDomain: "shri-bihari-ji-cold-storage.firebaseapp.com",
-            projectId: "shri-bihari-ji-cold-storage",
-            storageBucket: "shri-bihari-ji-cold-storage.firebasestorage.app",
-            messagingSenderId: "244015012898",
-            appId: "1:244015012898:web:87c769ed6f94835244fe7b"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    <script>
+        // YAHAN APNA APPS SCRIPT URL DALNA HAI
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfyc.../exec';
 
         const OFFICE_LAT = 26.982963; 
         const OFFICE_LNG = 79.954365;
@@ -75,6 +63,13 @@
         const inBtn = document.getElementById('inBtn');
         const outBtn = document.getElementById('outBtn');
         let currentType = '';
+
+        // Device ID Generate - 1 Mobile = 1 ID
+        let deviceId = localStorage.getItem('deviceId');
+        if(!deviceId){
+          deviceId = 'D' + Date.now() + Math.random().toString(36).substr(2,5);
+          localStorage.setItem('deviceId', deviceId);
+        }
 
         window.checkLocation = function(type) {
             currentType = type;
@@ -102,7 +97,7 @@
         function success(position) {
             const distance = getDistance(OFFICE_LAT, OFFICE_LNG, position.coords.latitude, position.coords.longitude);
             if (distance <= ALLOWED_DISTANCE) {
-                markAttendance(distance);
+                markAttendance(distance, position.coords.latitude, position.coords.longitude);
             } else {
                 showMsg(`❌ आप ${Math.round(distance)}m दूर हैं। 100m के अंदर आएं`, 'error');
                 enableButtons();
@@ -122,24 +117,34 @@
             return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         }
 
-        async function markAttendance(distance) {
+        async function markAttendance(distance, lat, lng) {
             const name = document.getElementById('empName').value.trim();
             const work = document.getElementById('work').value.trim();
             
+            const data = {
+                name: name,
+                type: currentType,
+                work: work,
+                lat: lat,
+                lng: lng,
+                deviceId: deviceId
+            };
+            
+            showMsg('⏳ हाज़िरी भेज रहे हैं...', 'info');
+            
             try {
-                await addDoc(collection(db, "attendance"), {
-                    name: name,
-                    type: currentType,
-                    work: work,
-                    distance: Math.round(distance),
-                    timestamp: new Date(),
-                    date: new Date().toLocaleDateString('hi-IN'),
-                    time: new Date().toLocaleTimeString('hi-IN')
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {'Content-Type': 'text/plain'},
+                    body: JSON.stringify(data)
                 });
-                showMsg(`✅ ${currentType} हाज़िरी लग गई! ${Math.round(distance)}m दूर`, 'success');
+                
+                showMsg(`✅ ${currentType} हाज़िरी भेज दी! Sheet Check करो`, 'success');
                 document.getElementById('work').value = '';
+                
             } catch (err) {
-                showMsg('Error: ' + err.message, 'error');
+                showMsg('❌ Error: Sheet से Connect नहीं हुआ', 'error');
             }
             enableButtons();
         }
