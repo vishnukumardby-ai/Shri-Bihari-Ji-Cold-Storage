@@ -7,8 +7,24 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #f3f4f6; padding: 20px; }
-        .box { max-width: 400px; margin: 50px auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
-        h2 { color: #1e3a8a; margin-bottom: 15px; line-height: 1.4; }
+        .box { max-width: 400px; margin: 50px auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        
+        .title-main { 
+            text-align: left; 
+            color: #1e3a8a; 
+            font-size: 20px; 
+            font-weight: bold; 
+            margin-bottom: 4px;
+            padding-left: 2px;
+        }
+        .title-sub { 
+            text-align: center; 
+            color: #1e3a8a; 
+            font-size: 20px; 
+            font-weight: bold; 
+            margin-bottom: 15px;
+        }
+        
         label { display: block; text-align: left; font-weight: bold; margin-top: 10px; color: #374151; }
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; font-family: Arial, sans-serif; }
         textarea { resize: vertical; min-height: 60px; }
@@ -17,15 +33,17 @@
         .btn-in { flex: 1; background: #10b981; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
         .btn-out { flex: 1; background: #ef4444; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
         button:disabled { background: #999; }
-        .msg { padding: 15px; border-radius: 10px; margin-top: 15px; font-weight: bold; }
+        .msg { padding: 15px; border-radius: 10px; margin-top: 15px; font-weight: bold; text-align: center; }
         .success { background: #d1fae5; color: #065f46; }
         .error { background: #fee2e2; color: #991b1b; }
-        .info { background: #dbeafe; color: #1e40af; font-size: 14px; }
+        .info { background: #dbeafe; color: #1e40af; font-size: 14px; text-align: center; }
     </style>
 </head>
 <body>
     <div class="box">
-        <h2>📍 Shri Bihari Ji Cold Storage<br>Attendance Register</h2>
+        <div class="title-main">📍 Shri Bihari Ji Cold Storage</div>
+        <div class="title-sub">Attendance Register</div>
+        
         <div class="info">100 मीटर के अंदर ही हाज़िरी लगेगी | 1 Mobile = 2 हाज़िरी/दिन</div>
         
         <label>अपना नाम <span class="required">*</span></label>
@@ -45,8 +63,8 @@
         <textarea id="work"></textarea>
         
         <div class="btn-group">
-            <button class="btn-in" id="inBtn" onclick="checkLocation('IN')">✅ IN - आया</button>
-            <button class="btn-out" id="outBtn" onclick="checkLocation('OUT')">❌ OUT - गया</button>
+            <button class="btn-in" id="inBtn" onclick="checkLocation('IN')">✅ IN - आये</button>
+            <button class="btn-out" id="outBtn" onclick="checkLocation('OUT')">❌ OUT - गये</button>
         </div>
         <div id="status"></div>
     </div>
@@ -79,7 +97,7 @@
                 return;
             }
             if(!work) {
-                showMsg('❌ "आज क्या काम कर रहे हैं?" लिखना जरूरी है', 'error');
+                showMsg('❌ "आज आप क्या काम कर रहे हैं?" लिखना जरूरी है', 'error');
                 return;
             }
 
@@ -138,7 +156,7 @@
                     body: JSON.stringify(data)
                 });
                 
-                showMsg(`✅ ${currentType} हाज़िरी भेज दी! Sheet Check करो`, 'success');
+                showMsg('✅ हाजिरी सफलता पूर्वक दर्ज कर ली गई है', 'success');
                 document.getElementById('work').value = '';
                 
             } catch (err) {
