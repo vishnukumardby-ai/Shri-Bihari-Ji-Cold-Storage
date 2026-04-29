@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance - 100m Lock</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f3f4f6; padding: 20px; }
+        .box { max-width: 400px; margin: 50px auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
+        h2 { color: #1e3a8a; margin-bottom: 20px; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; }
+        button { width: 100%; background: #10b981; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        button:disabled { background: #999; }
+        .msg { padding: 15px; border-radius: 10px; margin-top: 15px; font-weight: bold; }
+        .success { background: #d1fae5; color: #065f46; }
+        .error { background: #fee2e2; color: #991b1b; }
+        .info { background: #dbeafe; color: #1e40af; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>📍 हाज़िरी लगाएं</h2>
+        <div class="info">कोल्ड स्टोरेज से 100 मीटर के अंदर ही हाज़िरी लगेगी</div>
+        
+        <select id="empName">
+            <option value="">अपना नाम चुनें</option>
+            <option>महेश चन्द्र मिश्रा</option>
+            <option>विष्णु कुमार दुबे</option>
+            <option>सौरभ दुबे</option>
+            <option>सुमित दुबे</option>
+            <option>अनुज कुमार दुबे</option>
+            <option>सुनीत शर्मा</option>
+            <option>गोपाल ठाकुर</option>
+            <option>गुरदीप</option>
+        </select>
+        
+        <input type="text" id="work" placeholder="आज क्या काम कर रहे हैं?">
+        
+        <button id="markBtn" onclick="checkLocation()">Location चेक करें</button>
+        <div id="status"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyABEY-NJR6s6gFKcOauqaTTrWb8CJDW3s",
+            authDomain: "shri-bihari-ji-cold-storage.firebaseapp.com",
+            projectId: "shri-bihari-ji-cold-storage",
+            storageBucket: "shri-bihari-ji-cold-storage.firebasestorage.app",
+            messagingSenderId: "244015012898",
+            appId: "1:244015012898:web:87c769ed6f94835244fe7b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // यहाँ अपने कोल्ड स्टोरेज का Latitude, Longitude डाल - बहुत जरूरी
+        const OFFICE_LAT = 27.1766701; // Google Maps से उठा ले
+        const OFFICE_LNG = 78.0080745; // Google Maps से उठा ले
+        const ALLOWED_DISTANCE = 100; // 100 मीटर कर दिया
+
+        const statusDiv = document.getElementById('status');
+        const markBtn = document.getElementById('markBtn');
+
+        window.checkLocation = function() {
+            const name = document.getElementById('empName').value;
+            const work = document.getElementById('work').value;
+            
+            if(!name || !work) {
+                showMsg('नाम और काम दोनों भरें', 'error');
+                return;
+            }
+
+            markBtn.disabled = true;
+            showMsg('Location चेक हो रही है... GPS ऑन रखें', 'info');
+
+            if (!navigator.geolocation) {
+                showMsg('आपका ब्राउज़र GPS सपोर्ट नहीं करता', 'error');
+                markBtn.disabled = false;
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(success, error, {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            });
+        }
+
+        function success(position) {
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+            const distance = getDistance(OFFICE_LAT, OFFICE_LNG, userLat, userLng);
+
+            if (distance <= ALLOWED_DISTANCE) {
+                markAttendance(distance);
+            } else {
+                showMsg(`❌ आप ${Math.round(distance)} मीटर दूर हैं। 100 मीटर के अंदर आएं`, 'error');
+                markBtn.disabled = false;
+            }
+        }
+
+        function error(err) {
+            showMsg('Location Error: GPS ऑन करें और Permission दें', 'error');
+            markBtn.disabled = false;
+        }
+
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3;
+            const φ1 = lat1 * Math.PI/180;
+            const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180;
+            const Δλ = (lon2-lon1) * Math.PI/180;
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        async function markAttendance(distance) {
+            const name = document.getElementById('empName').value;
+            const work = document.getElementById('work').value;
+            
+            try {
+                await addDoc(collection(db, "attendance"), {
+                    name: name,
+                    work: work,
+                    distance: Math.round(distance),
+                    timestamp: new Date(),
+                    date: new Date().toLocaleDateString('hi-IN')
+                });
+                showMsg(`✅ हाज़िरी लग गई! आप ${Math.round(distance)}m दूर हैं`, 'success');
+                document.getElementById('empName').value = '';
+                document.getElementById('work').value = '';
+            } catch (err) {
+                showMsg('Firebase Error: ' + err.message, 'error');
+            }
+            markBtn.disabled = false;
+        }
+
+        function showMsg(text, type) {
+            statusDiv.className = 'msg ' + type;
+            statusDiv.innerText = text;
+        }
+    </script>
+</body>
+</html>
