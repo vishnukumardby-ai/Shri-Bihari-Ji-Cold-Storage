@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance IN/OUT - 100m Lock</title>
+    <title>Shri Bihari Ji Cold Storage - Attendance</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #f3f4f6; padding: 20px; }
         .box { max-width: 400px; margin: 50px auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
-        h2 { color: #1e3a8a; margin-bottom: 15px; }
+        h2 { color: #1e3a8a; margin-bottom: 15px; line-height: 1.4; }
         label { display: block; text-align: left; font-weight: bold; margin-top: 10px; color: #374151; }
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; font-family: Arial, sans-serif; }
         textarea { resize: vertical; min-height: 60px; }
@@ -25,7 +25,7 @@
 </head>
 <body>
     <div class="box">
-        <h2>📍 हाज़िरी IN/OUT</h2>
+        <h2>📍 Shri Bihari Ji Cold Storage<br>Attendance Register</h2>
         <div class="info">100 मीटर के अंदर ही हाज़िरी लगेगी | 1 Mobile = 2 हाज़िरी/दिन</div>
         
         <label>अपना नाम <span class="required">*</span></label>
@@ -42,7 +42,7 @@
         </select>
         
         <label>आज क्या काम कर रहे हैं? <span class="required">*</span></label>
-        <textarea id="work" placeholder="Duty लिख दे"></textarea>
+        <textarea id="work"></textarea>
         
         <div class="btn-group">
             <button class="btn-in" id="inBtn" onclick="checkLocation('IN')">✅ IN - आया</button>
@@ -63,7 +63,6 @@
         const outBtn = document.getElementById('outBtn');
         let currentType = '';
 
-        // Device ID Fix - Apps Script में device_id चाहिए
         let device_id = localStorage.getItem('device_id');
         if(!device_id){
           device_id = 'D' + Date.now() + Math.random().toString(36).substr(2,5);
