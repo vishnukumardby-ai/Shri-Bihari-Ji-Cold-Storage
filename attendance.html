@@ -55,10 +55,11 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1USWnlYBZJDkTYnsr8-nxomYJ2idnaaII-dOOWPVypGEdu0KqzMLDw3x-lY8mmPVJ/exec';
+        // ✅ तेरा सही Deploy URL डाल दिया
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyKCnWEtxwXPoFQC-bJcsDX7s7gHk8UREuyVl-fgfHQumiQKw6Ti-NfdvAdADv2nbUy/exec';
         const OFFICE_LAT = 26.982963; 
         const OFFICE_LNG = 79.954365;
-        const ALLOWED_DISTANCE = 100;
+        const ALLOWED_DISTANCE = 100; // 100m Lock ✅
 
         const statusDiv = document.getElementById('status');
         const inBtn = document.getElementById('inBtn');
@@ -111,7 +112,7 @@
 
         function success(position) {
             const distance = getDistance(OFFICE_LAT, OFFICE_LNG, position.coords.latitude, position.coords.longitude);
-            if (distance <= ALLOWED_DISTANCE) {
+            if (distance <= ALLOWED_DISTANCE) { // ✅ 100m Lock लगा है
                 markAttendance(distance, position.coords.latitude, position.coords.longitude);
             } else {
                 showMsg(`❌ आप ${Math.round(distance)}m दूर हैं। 100m के अंदर आएं`, 'error');
@@ -147,8 +148,12 @@
                 body: JSON.stringify(data)
             }).then(response => response.text())
             .then(result => {
-                showMsg('✅ Attendance सफल!', 'success');
-                document.getElementById('work').value = '';
+                if(result.includes('SUCCESS')) {
+                    showMsg('✅ Attendance सफल!', 'success');
+                    document.getElementById('work').value = '';
+                } else {
+                    showMsg('❌ ' + result, 'error');
+                }
                 inBtn.disabled = false;
                 outBtn.disabled = false;
             }).catch(err => {
