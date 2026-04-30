@@ -141,6 +141,9 @@
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain',
+                },
                 body: JSON.stringify(data)
             }).then(response => response.text())
             .then(result => {
