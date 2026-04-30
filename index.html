@@ -26,7 +26,7 @@
 .hidden { display: none!important; }
         p { margin: 8px 0; }
         @keyframes scroll-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        #noticeText, #noticeTextEn { display:inline-block; animation:scroll-left 30s linear infinite; font-weight:bold; font-size:16px; }
+        #noticeText, #noticeTextEn { display:inline-block; animation:scroll-left 30s linear infinite; font-weight:bold; font-size:16px; padding-left: 100%; }
         #noticeText:hover, #noticeTextEn:hover { animation-play-state: paused; }
     </style>
 </head>
@@ -112,7 +112,7 @@
             <button class="lang-switch" onclick="toggleLang()">हिन्दी</button>
         </div>
         <div style="background:#b91c1c; color:white; padding:10px 0; margin:0; overflow:hidden; white-space:nowrap;">
-          <div id="noticeTextEn">📢 Notice loading...</div>
+          <div id="noticeTextEn">📢 Loading notice...</div>
         </div>
         <div class="container">
             <div class="card">
@@ -160,4 +160,45 @@
         <div class="footer">
             <p>© 2026 Shri Bihari Ji Cold Storage | All Rights Reserved</p>
         </div>
-   
+    </div>
+
+    <script>
+        function toggleLang() {
+            document.getElementById('content-hi').classList.toggle('hidden');
+            document.getElementById('content-en').classList.toggle('hidden');
+            const isHindi =!document.getElementById('content-hi').classList.contains('hidden');
+            localStorage.setItem('site_lang', isHindi? 'hi' : 'en');
+        }
+
+        window.onload = function() {
+            const savedLang = localStorage.getItem('site_lang');
+            if (savedLang === 'en') {
+                document.getElementById('content-hi').classList.add('hidden');
+                document.getElementById('content-en').classList.remove('hidden');
+            }
+
+            // सिर्फ Sheet से Notice आएगी, कोई Default नहीं
+            const SHEET_ID = '15ngVBRBz296GFPTnsiKMCgJBOhsdPzN8gakvfknL28M';
+            const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
+            fetch(SHEET_URL)
+              .then(res => res.text())
+              .then(text => {
+                    const json = JSON.parse(text.substring(47).slice(0, -2));
+                    const notice = json.table.rows[1]?.c[0]?.v;
+                    if(notice) {
+                        document.getElementById('noticeText').innerText = '📢 ' + notice;
+                        document.getElementById('noticeTextEn').innerText = '📢 ' + notice;
+                    } else {
+                        document.getElementById('noticeText').innerText = '📢 ';
+                        document.getElementById('noticeTextEn').innerText = '📢 ';
+                    }
+                })
+              .catch(err => {
+                    document.getElementById('noticeText').innerText = '📢 ';
+                    document.getElementById('noticeTextEn').innerText = '📢 ';
+                });
+        }
+    </script>
+</body>
+</html>
