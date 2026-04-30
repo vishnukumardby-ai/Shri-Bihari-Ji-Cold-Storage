@@ -25,8 +25,8 @@
 .footer { text-align: center; padding: 20px; color: #666; }
 .hidden { display: none!important; }
         p { margin: 8px 0; }
-        @keyframes scroll-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-5%); } }
-        #noticeText, #noticeTextEn { display:inline-block; animation:scroll-left 20s linear infinite; font-weight:bold; font-size:16px; padding-left: 100%; white-space: nowrap; }
+        @keyframes scroll-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        #noticeText, #noticeTextEn { display:inline-block; animation:scroll-left 30s linear infinite; font-weight:bold; font-size:16px; }
         #noticeText:hover, #noticeTextEn:hover { animation-play-state: paused; }
     </style>
 </head>
@@ -47,7 +47,7 @@
         </div>
 
         <div style="background:#b91c1c; color:white; padding:10px 0; margin:0; overflow:hidden; white-space:nowrap;">
-          <div id="noticeText">📢 </div>
+          <div id="noticeText">📢 सूचना लोड हो रही है...</div>
         </div>
 
         <div class="container">
@@ -92,6 +92,10 @@
                     <p style="margin: 0; color: #555; font-size: 14px;">📍 नेरा रोड, सुल्तनापुर, कन्नौज</p>
                 </div>
             </div>
+            <div class="card">
+                <h2>📍 स्थान</h2>
+               <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3567.642983546!2d79.851464!3d26.594736!2m3!1f0!2f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399d2b7c6a5a1a1b%3A0x8e9a9a9a!2sShri%20Bihari%20Ji%20Cold%20Storage!5e0!3m2!1sen!2sin!4v1724840000000!5m2!1sen!2sin" width="100%" height="300" style="border:0; border-radius:10px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
         </div>
         <div class="footer">
             <p>© 2026 श्री बिहारी जी कोल्ड स्टोरेज | सभी अधिकार सुरक्षित</p>
@@ -112,7 +116,7 @@
             <button class="lang-switch" onclick="toggleLang()">हिन्दी</button>
         </div>
         <div style="background:#b91c1c; color:white; padding:10px 0; margin:0; overflow:hidden; white-space:nowrap;">
-          <div id="noticeTextEn">📢 </div>
+          <div id="noticeTextEn">📢 Notice loading...</div>
         </div>
         <div class="container">
             <div class="card">
@@ -156,6 +160,10 @@
                     <p style="margin: 0; color: #555; font-size: 14px;">📍 Nera Road, Sultanapur, Kannauj</p>
                 </div>
             </div>
+            <div class="card">
+                <h2>📍 Location</h2>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3567.642983546!2d79.851464!3d26.594736!2m3!1f0!2f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399d2b7c6a5a1a1b%3A0x8e9a9a9a!2sShri%20Bihari%20Ji%20Cold%20Storage!5e0!3m2!1sen!2sin!4v1724840000000!5m2!1sen!2sin" width="100%" height="300" style="border:0; border-radius:10px;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
         </div>
         <div class="footer">
             <p>© 2026 Shri Bihari Ji Cold Storage | All Rights Reserved</p>
@@ -170,35 +178,25 @@
             localStorage.setItem('site_lang', isHindi? 'hi' : 'en');
         }
 
-        function setNotice(notice) {
-            const text = '📢 ' + (notice || '');
-            document.getElementById('noticeText').innerText = text;
-            document.getElementById('noticeTextEn').innerText = text;
-            if(notice) localStorage.setItem('cached_notice', notice);
-        }
-
         window.onload = function() {
             const savedLang = localStorage.getItem('site_lang');
             if (savedLang === 'en') {
                 document.getElementById('content-hi').classList.add('hidden');
                 document.getElementById('content-en').classList.remove('hidden');
             }
-
-            const cachedNotice = localStorage.getItem('cached_notice');
-            if (cachedNotice) setNotice(cachedNotice);
-
-            const SHEET_ID = '15ngVBRBz296GFPTnsiKMCgJBOhsdPzN8gakvfknL28M';
-            const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-
-            fetch(SHEET_URL)
-            .then(res => res.text())
-            .then(text => {
-                    const json = JSON.parse(text.substring(47).slice(0, -2));
-                    const notice = json.table.rows[1]?.c[0]?.v;
-                    if(notice) setNotice(notice);
-                })
-            .catch(err => console.log('Notice Error:', err));
         }
+
+        const SHEET_ID = '15ngVBRBz296GFPTnsiKMCgJBOhsdPzN8gakvfknL28M';
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+        fetch(SHEET_URL).then(res => res.text()).then(text => {
+            const json = JSON.parse(text.substring(47).slice(0, -2));
+            const notice = json.table.rows[0]?.c[0]?.v || 'सूचना लोड हो रही है';
+            document.getElementById('noticeText').innerText = '📢 ' + notice;
+            document.getElementById('noticeTextEn').innerText = '📢 ' + notice;
+        }).catch(err => {
+            document.getElementById('noticeText').innerText = '📢 सूचना लोड हो रही है';
+            document.getElementById('noticeTextEn').innerText = '📢 Notice loading...';
+        });
     </script>
 </body>
 </html>
