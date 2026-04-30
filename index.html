@@ -25,8 +25,8 @@
 .footer { text-align: center; padding: 20px; color: #666; }
 .hidden { display: none!important; }
         p { margin: 8px 0; }
-        @keyframes scroll-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        #noticeText, #noticeTextEn { display:inline-block; animation:scroll-left 30s linear infinite; font-weight:bold; font-size:16px; padding-left: 100%; }
+        @keyframes scroll-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-5%); } }
+        #noticeText, #noticeTextEn { display:inline-block; animation:scroll-left 20s linear infinite; font-weight:bold; font-size:16px; padding-left: 100%; white-space: nowrap; }
         #noticeText:hover, #noticeTextEn:hover { animation-play-state: paused; }
     </style>
 </head>
@@ -178,29 +178,26 @@
         }
 
         window.onload = function() {
-            // 1. Language set करो
             const savedLang = localStorage.getItem('site_lang');
             if (savedLang === 'en') {
                 document.getElementById('content-hi').classList.add('hidden');
                 document.getElementById('content-en').classList.remove('hidden');
             }
 
-            // 2. Cache से Notice तुरंत दिखा दो - Delay खत्म
             const cachedNotice = localStorage.getItem('cached_notice');
             if (cachedNotice) setNotice(cachedNotice);
 
-            // 3. Sheet से Fresh Notice लाओ
             const SHEET_ID = '15ngVBRBz296GFPTnsiKMCgJBOhsdPzN8gakvfknL28M';
             const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
             fetch(SHEET_URL)
-             .then(res => res.text())
-             .then(text => {
+            .then(res => res.text())
+            .then(text => {
                     const json = JSON.parse(text.substring(47).slice(0, -2));
                     const notice = json.table.rows[1]?.c[0]?.v;
                     if(notice) setNotice(notice);
                 })
-             .catch(err => console.log('Notice Error:', err));
+            .catch(err => console.log('Notice Error:', err));
         }
     </script>
 </body>
