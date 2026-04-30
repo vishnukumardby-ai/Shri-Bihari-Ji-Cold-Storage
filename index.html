@@ -85,13 +85,14 @@
                 <h2>🏭 अन्य प्रतिष्ठान</h2>
                 <div style="margin-bottom: 15px; padding: 12px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #ff6b35;">
                     <h3 style="margin: 0 0 5px 0; color: #2c3e50; font-size: 16px;">जय बाला जी ब्रिक फील्ड</h3>
-                    <p style="margin: 0; color: #555; font-size: 14px;">📍 राजगीरिहार, हरदोई रोड तिराहा, कन्नौज</p>
+                    <p style="margin: 0; color: #555; font-size: 14px;">📍 रजिगिरहार, हरदोई रोड तिराहा, कन्नौज</p>
                 </div>
                 <div style="padding: 12px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #28a745;">
                     <h3 style="margin: 0 0 5px 0; color: #2c3e50; font-size: 16px;">श्री बिहारी जी ईंट प्रोडक्ट</h3>
-                    <p style="margin: 0; color: #555; font-size: 14px;">📍 नेरा रोड, सुल्तानपुर, कन्नौज</p>
+                    <p style="margin: 0; color: #555; font-size: 14px;">📍 नेरा रोड, सुल्तनापुर, कन्नौज</p>
                 </div>
             </div>
+        </div>
         <div class="footer">
             <p>© 2026 श्री बिहारी जी कोल्ड स्टोरेज | सभी अधिकार सुरक्षित</p>
         </div>
@@ -135,6 +136,7 @@
                     <a href="tel:7007490379" class="btn btn-call">Call Now</a>
                     <a href="https://wa.me/917007490379" class="btn">WhatsApp</a>
                 </div>
+            </div>
             <div class="card">
                 <h2>⭐ Our Features</h2>
                 <p>✓ Modern technology for potato storage</p>
@@ -147,46 +149,15 @@
                 <h2>🏭 Other Establishments</h2>
                 <div style="margin-bottom: 15px; padding: 12px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #ff6b35;">
                     <h3 style="margin: 0 0 5px 0; color: #2c3e50; font-size: 16px;">Jai Bala Ji Brick Field</h3>
-                    <p style="margin: 0; color: #555; font-size: 14px;">📍 Rajgirihar, Hardoi Road Tiraha, Kannauj</p>
+                    <p style="margin: 0; color: #555; font-size: 14px;">📍 Rajgirhar, Hardoi Road Tiraha, Kannauj</p>
                 </div>
                 <div style="padding: 12px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #28a745;">
-                    <h3 style="margin: 0 0 5px 0; color: #2c3e50; font-size: 16px;">Shri Bihari Ji Eent Product</h3>
-                    <p style="margin: 0; color: #555; font-size: 14px;">📍 Nera Road, Sultanpur, Kannauj</p>
+                    <h3 style="margin: 0 0 5px 0; color: #2c3e50; font-size: 16px;">Shri Bihari Ji Eant Product</h3>
+                    <p style="margin: 0; color: #555; font-size: 14px;">📍 Nera Road, Sultanapur, Kannauj</p>
                 </div>
             </div>
         </div>
         <div class="footer">
             <p>© 2026 Shri Bihari Ji Cold Storage | All Rights Reserved</p>
         </div>
-    </div>
-
-    <script>
-        function toggleLang() {
-            document.getElementById('content-hi').classList.toggle('hidden');
-            document.getElementById('content-en').classList.toggle('hidden');
-            const isHindi =!document.getElementById('content-hi').classList.contains('hidden');
-            localStorage.setItem('site_lang', isHindi? 'hi' : 'en');
-        }
-
-        window.onload = function() {
-            const savedLang = localStorage.getItem('site_lang');
-            if (savedLang === 'en') {
-                document.getElementById('content-hi').classList.add('hidden');
-                document.getElementById('content-en').classList.remove('hidden');
-            }
-        }
-
-        const SHEET_ID = '15ngVBRBz296GFPTnsiKMCgJBOhsdPzN8gakvfknL28M';
-        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-        fetch(SHEET_URL).then(res => res.text()).then(text => {
-            const json = JSON.parse(text.substring(47).slice(0, -2));
-            const notice = json.table.rows[0]?.c[0]?.v || 'सूचना लोड हो रही है';
-            document.getElementById('noticeText').innerText = '📢 ' + notice;
-            document.getElementById('noticeTextEn').innerText = '📢 ' + notice;
-        }).catch(err => {
-            document.getElementById('noticeText').innerText = '📢 सूचना लोड हो रही है';
-            document.getElementById('noticeTextEn').innerText = '📢 Notice loading...';
-        });
-    </script>
-</body>
-</html>
+   
