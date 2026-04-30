@@ -47,7 +47,7 @@
         </div>
 
         <div style="background:#b91c1c; color:white; padding:10px 0; margin:0; overflow:hidden; white-space:nowrap;">
-          <div id="noticeText">📢 सूचना लोड हो रही है...</div>
+          <div id="noticeText">📢 </div>
         </div>
 
         <div class="container">
@@ -112,7 +112,7 @@
             <button class="lang-switch" onclick="toggleLang()">हिन्दी</button>
         </div>
         <div style="background:#b91c1c; color:white; padding:10px 0; margin:0; overflow:hidden; white-space:nowrap;">
-          <div id="noticeTextEn">📢 Loading notice...</div>
+          <div id="noticeTextEn">📢 </div>
         </div>
         <div class="container">
             <div class="card">
@@ -170,34 +170,37 @@
             localStorage.setItem('site_lang', isHindi? 'hi' : 'en');
         }
 
+        function setNotice(notice) {
+            const text = '📢 ' + (notice || '');
+            document.getElementById('noticeText').innerText = text;
+            document.getElementById('noticeTextEn').innerText = text;
+            if(notice) localStorage.setItem('cached_notice', notice);
+        }
+
         window.onload = function() {
+            // 1. Language set करो
             const savedLang = localStorage.getItem('site_lang');
             if (savedLang === 'en') {
                 document.getElementById('content-hi').classList.add('hidden');
                 document.getElementById('content-en').classList.remove('hidden');
             }
 
-            // सिर्फ Sheet से Notice आएगी, कोई Default नहीं
+            // 2. Cache से Notice तुरंत दिखा दो - Delay खत्म
+            const cachedNotice = localStorage.getItem('cached_notice');
+            if (cachedNotice) setNotice(cachedNotice);
+
+            // 3. Sheet से Fresh Notice लाओ
             const SHEET_ID = '15ngVBRBz296GFPTnsiKMCgJBOhsdPzN8gakvfknL28M';
             const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
             fetch(SHEET_URL)
-              .then(res => res.text())
-              .then(text => {
+             .then(res => res.text())
+             .then(text => {
                     const json = JSON.parse(text.substring(47).slice(0, -2));
                     const notice = json.table.rows[1]?.c[0]?.v;
-                    if(notice) {
-                        document.getElementById('noticeText').innerText = '📢 ' + notice;
-                        document.getElementById('noticeTextEn').innerText = '📢 ' + notice;
-                    } else {
-                        document.getElementById('noticeText').innerText = '📢 ';
-                        document.getElementById('noticeTextEn').innerText = '📢 ';
-                    }
+                    if(notice) setNotice(notice);
                 })
-              .catch(err => {
-                    document.getElementById('noticeText').innerText = '📢 ';
-                    document.getElementById('noticeTextEn').innerText = '📢 ';
-                });
+             .catch(err => console.log('Notice Error:', err));
         }
     </script>
 </body>
