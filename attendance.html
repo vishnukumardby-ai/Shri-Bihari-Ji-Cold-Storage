@@ -29,7 +29,7 @@
         <div class="title-main">📍 Shri Bihari Ji Cold Storage</div>
         <div class="title-sub">Attendance Register</div>
         
-        <div class="info">600 मीटर के अंदर ही हाज़िरी लगेगी | 1 Mobile = 2 हाज़िरी/दिन</div>
+        <div class="info">100 मीटर के अंदर ही हाज़िरी लगेगी | 1 Mobile = 2 हाज़िरी/दिन</div>
         
         <label>अपना नाम <span class="required">*</span></label>
         <select id="empName">
@@ -58,7 +58,7 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8C7GyBI0xm_WmITSYhMhMCNucvc5Czcpn1KiTWZzBxSHp_3zyc_-qv8Q5xLiymW8/exec';
         const OFFICE_LAT = 26.982963; 
         const OFFICE_LNG = 79.954365;
-        const ALLOWED_DISTANCE = 600; // 600m Lock कर दिया ✅
+        const ALLOWED_DISTANCE = 100; // 100m Lock कर दिया ✅
 
         const statusDiv = document.getElementById('status');
         const inBtn = document.getElementById('inBtn');
@@ -111,10 +111,10 @@
 
         function success(position) {
             const distance = getDistance(OFFICE_LAT, OFFICE_LNG, position.coords.latitude, position.coords.longitude);
-            if (distance <= ALLOWED_DISTANCE) { // 600m Lock ✅
+            if (distance <= ALLOWED_DISTANCE) { // 100m Lock ✅
                 markAttendance(distance, position.coords.latitude, position.coords.longitude);
             } else {
-                showMsg(`❌ आप ${Math.round(distance)}m दूर हैं। 600m के अंदर आएं`, 'error');
+                showMsg(`❌ आप ${Math.round(distance)}m दूर हैं। 100m के अंदर आएं`, 'error');
                 inBtn.disabled = false;
                 outBtn.disabled = false;
             }
