@@ -186,16 +186,29 @@
             }
         }
 
-        const SHEET_ID = '15ngVBRBz296GFPTnsiKMCgJBOhsdPzN8gakvfknL28M';
-        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-        fetch(SHEET_URL).then(res => res.text()).then(text => {
-            const json = JSON.parse(text.substring(47).slice(0, -2));
-            const notice = json.table.rows[0]?.c[0]?.v || 'सूचना लोड हो रही है';
-            document.getElementById('noticeText').innerText = '📢 ' + notice;
-            document.getElementById('noticeTextEn').innerText = '📢 ' + notice;
-        }).catch(err => {
-            document.getElementById('noticeText').innerText = '📢 सूचना लोड हो रही है';
-            document.getElementById('noticeTextEn').innerText = '📢 Notice loading...';
+    const SHEET_ID = '15ngVBRBz296GFPTnsiKMCgJBOhsdPzN8gakvfl'
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`
+
+function updateNotice() {
+    fetch(SHEET_URL).then(res => res.text()).then(text => {
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const notice = json.table.rows[0]?.c[0]?.v || 'श्री बिहारी जी कोल्ड स्टो';
+        // Notice को 4 बार जोड़ दो ताकि Animation टूटे ही ना
+        const fullNotice = `📢 ${notice} 📢 ${notice} 📢 ${notice} 📢 ${notice}`;
+        document.getElementById('noticeText').innerText = fullNotice;
+        document.getElementById('noticeTextEn').innerText = fullNotice;
+    }).catch(err => {
+        // Error आने पर भी Welcome Message ही चलता रहे
+        const fallback = '📢 श्री बिहारी जी कोल्ड स्टोरेज में आपका स्वागत है 📢 श्री';
+        document.getElementById('noticeText').innerText = fallback;
+        document.getElementById('noticeTextEn').innerText = fallback;
+    });
+}
+
+// पेज Load होते ही Sheet Call कर दो
+updateNotice();
+// हर 1 मिनट में Refresh
+setInterval(updateNotice, 60000);   
         });
     </script>
 </body>
