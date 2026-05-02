@@ -191,7 +191,7 @@ function updateNotice() {
         document.getElementById('noticeTextEn').innerText = fullNotice;
     }).catch(err => {
         // Error आने पर भी Welcome Message ही चलता रहे
-        const fallback = '📢 श्री बिहारी जी कोल्ड स्टोरेज में आपका स्वागत है 📢 श्री';
+        const fallback = '📢 श्री बिहारी जी कोल्ड स्टोरेज में आपका स्वागत है 📢 ';
         document.getElementById('noticeText').innerText = fallback;
         document.getElementById('noticeTextEn').innerText = fallback;
     });
