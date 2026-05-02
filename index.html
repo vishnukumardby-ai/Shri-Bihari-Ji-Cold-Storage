@@ -184,7 +184,7 @@ const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tq
 function updateNotice() {
     fetch(SHEET_URL).then(res => res.text()).then(text => {
         const json = JSON.parse(text.substring(47).slice(0, -2));
-        const notice = json.table.rows[0]?.c[0]?.v || 'श्री बिहारी जी कोल्ड स्टो';
+        const notice = json.table.rows[0]?.c[0]?.v || 'श्री बिहारी जी कोल्ड स्टोरेज';
         // Notice को 4 बार जोड़ दो ताकि Animation टूटे ही ना
         const fullNotice = `📢 ${notice} 📢 ${notice} 📢 ${notice} 📢 ${notice}`;
         document.getElementById('noticeText').innerText = fullNotice;
