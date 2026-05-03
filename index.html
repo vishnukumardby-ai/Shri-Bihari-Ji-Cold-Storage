@@ -26,7 +26,7 @@
 .hidden { display: none!important; }
         p { margin: 8px 0; }
         @keyframes scroll-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        #noticeText, #noticeTextEn { display:inline-block; animation:scroll-left 50s linear infinite; font-weight:bold; font-size:16px; }
+        #noticeText, #noticeTextEn { display:inline-block; animation:scroll-left 30s linear infinite; font-weight:bold; font-size:16px; padding-left: 100%; }
         #noticeText:hover, #noticeTextEn:hover { animation-play-state: paused; }
     </style>
 </head>
@@ -47,7 +47,7 @@
         </div>
 
         <div style="background:#b91c1c; color:white; padding:10px 0; margin:0; overflow:hidden; white-space:nowrap;">
-          <div id="noticeText">📢 श्री बिहारी जी कोल्ड स्टोरेज में आपका स्वागत है ।</div>
+          <div id="noticeText">📢 सूचना लोड हो रही है...</div>
         </div>
 
         <div class="container">
@@ -112,7 +112,7 @@
             <button class="lang-switch" onclick="toggleLang()">हिन्दी</button>
         </div>
         <div style="background:#b91c1c; color:white; padding:10px 0; margin:0; overflow:hidden; white-space:nowrap;">
-          <div id="noticeTextEn">📢 Welcome to Shri Bihari Ji Cold Storage</div>
+          <div id="noticeTextEn">📢 Loading notice...</div>
         </div>
         <div class="container">
             <div class="card">
@@ -136,7 +136,6 @@
                     <a href="tel:7007490379" class="btn btn-call">Call Now</a>
                     <a href="https://wa.me/917007490379" class="btn">WhatsApp</a>
                 </div>
-            </div>
             <div class="card">
                 <h2>⭐ Our Features</h2>
                 <p>✓ Modern technology for potato storage</p>
@@ -176,31 +175,24 @@
                 document.getElementById('content-hi').classList.add('hidden');
                 document.getElementById('content-en').classList.remove('hidden');
             }
+
+            const SHEET_ID = '15ngVBRBz296GFPTnsiKMCgJBOhsdPzN8gakvfknL28M';
+            const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
+            fetch(SHEET_URL)
+             .then(res => res.text())
+             .then(text => {
+                    const json = JSON.parse(text.substring(47).slice(0, -2));
+                    const notice = json.table.rows[1]?.c[0]?.v;
+                    if(notice) {
+                        document.getElementById('noticeText').innerText = '📢 ' + notice;
+                        document.getElementById('noticeTextEn').innerText = '📢 ' + notice;
+                    }
+                })
+             .catch(err => {
+                    console.log('Notice Error:', err);
+                });
         }
-
-  const SHEET_ID = '15ngVBRBz296GFPTnsiKMCgJBOhsdPzN8gakvfknL28M'
-const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`
-
-function updateNotice() {
-    fetch(SHEET_URL).then(res => res.text()).then(text => {
-        const json = JSON.parse(text.substring(47).slice(0, -2));
-        const notice = json.table.rows[0]?.c[0]?.v || 'श्री बिहारी जी कोल्ड स्टोरेज';
-        // Notice को 4 बार जोड़ दो ताकि Animation टूटे ही ना
-        const fullNotice = `📢 ${notice} 📢 ${notice} 📢 ${notice} 📢 ${notice}`;
-        document.getElementById('noticeText').innerText = fullNotice;
-        document.getElementById('noticeTextEn').innerText = fullNotice;
-    }).catch(err => {
-        // Error आने पर भी Welcome Message ही चलता रहे
-        const fallback = '📢 श्री बिहारी जी कोल्ड स्टोरेज में आपका स्वागत है 📢 ';
-        document.getElementById('noticeText').innerText = fallback;
-        document.getElementById('noticeTextEn').innerText = fallback;
-    });
-}
-
-// पेज Load होते ही Sheet Call कर दो
-updateNotice();
-// हर 1 मिनट में Refresh
-setInterval(updateNotice, 60000);   
     </script>
 </body>
 </html>
